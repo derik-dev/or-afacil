@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orçamento • Visualização</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* Classe utilitária para esconder placeholder quando logo carregar */
+        .has-logo #default-logo {
+            display: none !important;
+        }
+
+        /* Ajuste de tabela para garantir contraste */
+        #tbody-itens tr td {
+            color: #000000;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+            }
+
+            .print-shadow {
+                box-shadow: none !important;
+                margin: 0 !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-[#F0F4F8] min-h-screen flex flex-col items-center py-8 pb-32">
+
+    <!-- Toolbar Flutuante -->
+    <div
+        class="fixed top-4 bg-white/95 backdrop-blur shadow-lg border border-slate-200 px-6 py-3 rounded-full flex gap-4 items-center z-50 no-print transition-all hover:scale-[1.02]">
+        <a href="dashboard.html"
+            class="flex items-center gap-2 text-blue-900 hover:text-blue-700 font-bold text-sm mr-2 border-r border-gray-300 pr-4">
+            <i class="ph-bold ph-hexagon text-lg text-blue-600"></i> OrçaFácil
+        </a>
+        <a href="orcamentos.html" class="flex items-center gap-2 text-gray-500 hover:text-blue-600 font-bold text-sm">
+            <i class="ph-bold ph-arrow-left"></i> Voltar
+        </a>
+        <div class="h-4 w-px bg-gray-300 hidden md:block"></div>
+        <button onclick="baixarPDF()" class="flex items-center gap-2 text-black font-bold text-sm hover:underline">
+            <i class="ph-bold ph-download-simple"></i> Baixar PDF
+        </button>
+    </div>
+
+    <!-- DOCUMENTO PDF - PRETO E BRANCO REFINADO -->
+    <main id="documento-pdf"
+        class="bg-white w-full md:w-[210mm] relative shadow-2xl print-shadow text-black overflow-hidden mt-16 md:mt-0 mx-auto">
+
+        <!-- CABEÇALHO REESTRUTURADO (Logo Esquerda, Título Direita) -->
+        <div id="pdf-header-bar" class="bg-white text-black px-3 py-1.5 relative border-b-2 border-black">
+            <div class="flex justify-between items-start gap-3">
+
+                <!-- LADO ESQUERDO: LOGO E EMPRESA -->
+                <div class="text-left flex flex-col items-start flex-shrink-0">
+                    <!-- Logo Box -->
+                    <div id="logo-container"
+                        class="bg-white border border-gray-200 rounded-lg mb-1 relative h-28 w-28 flex items-center justify-center overflow-hidden">
+                        <img id="empresa-logo-img" src="" class="w-full h-full object-contain p-1 hidden">
+                        <div id="default-logo" class="h-full w-full flex items-center justify-center text-black">
+                            <i class="ph-bold ph-hexagon text-5xl"></i>
+                        </div>
+                    </div>
+
+                    <h2 class="font-bold text-sm text-black" id="empresa-nome">Sua Empresa</h2>
+                    <div class="text-[8px] text-gray-600 mt-0.5 space-y-0.5">
+                        <p class="flex items-center justify-start gap-1"><i class="ph-fill ph-map-pin text-[7px]"></i>
+                            <span id="empresa-end" class="text-left">Endereço</span>
+                        </p>
+                        <p class="flex items-center justify-start gap-1"><i class="ph-fill ph-phone text-[7px]"></i>
+                            <span id="empresa-tel">Telefone</span>
+                        </p>
+                        <p class="flex items-center justify-start gap-1"><i
+                                class="ph-fill ph-identification-card text-[7px]"></i>
+                            <span id="empresa-doc">CNPJ</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- LADO DIREITO: TÍTULO E OBSERVAÇÕES -->
+                <div class="flex-1 text-right flex flex-col items-end gap-2">
+                    <div>
+                        <h1 class="text-2xl font-bold tracking-tight mb-0 text-black">Orçamento</h1>
+                        <p class="text-gray-600 text-[9px] font-medium uppercase tracking-wider">Proposta Comercial</p>
+                    </div>
+
+                    <!-- OBSERVAÇÕES MOVIDO PARA CÁ -->
+                    <div id="box-observacoes"
+                        class="bg-gray-50 rounded-lg border border-gray-200 p-2 w-full max-w-[260px] text-left">
+                        <h4 class="font-bold text-[8px] text-black mb-0.5 uppercase border-b border-gray-300 pb-0.5">
+                            Observações</h4>
+                        <div class="text-[9px] text-gray-700 space-y-0.5 leading-tight">
+                            <p id="obs-pagamento" class="hidden">• Pagamento conforme indicado.</p>
+                            <p id="obs-prazo" class="hidden">• Prazo: <span id="obs-prazo-dias"></span> dias úteis.</p>
+                            <p id="obs-validade" class="hidden">• Validade: 15 dias.</p>
+                            <p>• Dúvidas? Contate-nos.</p>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Conteúdo Principal -->
+        <div class="px-3 py-1.5">
+
+            <!-- CARDS DE INFORMAÇÃO -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-1.5 mb-1.5">
+                <!-- Cliente -->
+                <div class="bg-gray-50 p-1.5 rounded-lg border border-gray-200">
+                    <h3
+                        class="text-[9px] font-bold text-black uppercase tracking-wider mb-1 border-b border-gray-300 pb-0.5">
+                        Informações do Cliente
+                    </h3>
+                    <div class="space-y-0.5 text-[10px] text-black">
+                        <p class="flex justify-between"><span class="font-bold text-gray-700">Nome:</span> <span
+                                id="cli-nome" class="text-right font-medium">...</span></p>
+                        <p class="flex justify-between"><span class="font-bold text-gray-700">Empresa:</span> <span
+                                id="cli-sub-empresa" class="text-gray-800 text-right">-</span></p>
+                        <p class="flex justify-between"><span class="font-bold text-gray-700">CPF/CNPJ:</span> <span
+                                id="cli-cpf" class="text-gray-800 text-right">-</span></p>
+                        <p class="flex justify-between"><span class="font-bold text-gray-700">Email:</span> <span
+                                id="cli-email" class="text-gray-800 text-right text-[9px] break-all">-</span></p>
+                        <p class="flex justify-between"><span class="font-bold text-gray-700">Telefone:</span> <span
+                                id="cli-tel" class="text-gray-800 text-right">-</span></p>
+                        <p class="flex justify-between"><span class="font-bold text-gray-700">Endereço:</span> <span
+                                id="cli-endereco" class="text-gray-800 text-right text-[9px]">-</span></p>
+                    </div>
+                </div>
+
+                <!-- Detalhes -->
+                <div class="bg-gray-50 p-1.5 rounded-lg border border-gray-200">
+                    <h3
+                        class="text-[9px] font-bold text-black uppercase tracking-wider mb-1 border-b border-gray-300 pb-0.5">
+                        Detalhes do Orçamento
+                    </h3>
+                    <div class="space-y-0.5 text-[10px] text-black">
+                        <p class="flex justify-between"><span class="font-bold text-gray-700">Nº Orçamento:</span> <span
+                                id="orc-id" class="text-right font-medium">#0000</span></p>
+                        <p class="flex justify-between"><span class="font-bold text-gray-700">Data Emissão:</span> <span
+                                id="orc-data" class="text-right font-medium">--/--/----</span></p>
+                        <p class="flex justify-between"><span class="font-bold text-gray-700">Validade:</span> <span
+                                id="orc-validade" class="text-gray-800 text-right">15 dias</span></p>
+                        <p class="flex justify-between"><span class="font-bold text-gray-700">Prazo Entrega:</span>
+                            <span id="orc-prazo" class="text-gray-800 text-right">0 Dias</span>
+                        </p>
+                        <p class="flex justify-between"><span class="font-bold text-gray-700">Forma Pagamento:</span>
+                            <span id="orc-pagamento" class="text-gray-800 text-right">A combinar</span>
+                        </p>
+                        <p class="flex justify-between"><span class="font-bold text-gray-700">Status:</span> <span
+                                id="orc-status" class="text-gray-800 text-right font-semibold">Pendente</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABELA DE ITENS -->
+            <section class="mb-1.5">
+                <h3 class="font-bold text-[10px] mb-1 text-black border-b border-black pb-0.5 inline-block">Descrição
+                    dos
+                    Serviços/Produtos</h3>
+                <div class="rounded-lg overflow-hidden border border-gray-300">
+                    <table class="w-full text-xs">
+                        <!-- Header (Cor aplicável via JS) -->
+                        <thead>
+                            <tr id="pdf-table-header" class="bg-black text-white">
+                                <th class="text-left p-1.5 font-semibold uppercase tracking-wide text-[10px]">Descrição
+                                </th>
+                                <th class="text-right p-1.5 font-semibold w-24 uppercase tracking-wide text-[10px]">
+                                    Valor</th>
+                            </tr>
+                        </thead>
+                        <!-- Corpo Branco com Texto Preto Forçado -->
+                        <tbody id="tbody-itens" class="divide-y divide-gray-200 bg-white text-black">
+                            <tr>
+                                <td class="p-2 text-left" colspan="2" id="orc-descricao">Carregando descrição...</td>
+                            </tr>
+                        </tbody>
+                        <!-- RODAPÉ INTEGRADO: PIX E TOTAIS -->
+                        <tfoot class="bg-gray-50 text-black border-t border-gray-300">
+                            <tr>
+                                <td colspan="2" class="p-0">
+                                    <div class="flex items-end divide-x divide-gray-300">
+
+                                        <!-- LADO ESQUERDO: PIX (Ocupa o espaço vazio) -->
+                                        <div class="flex-grow p-2 flex items-center justify-center">
+                                            <!-- PIX Box -->
+                                            <div id="box-pix"
+                                                class="hidden bg-white rounded-lg border border-dashed border-black p-2 w-full max-w-sm flex items-center justify-between gap-3 shadow-sm">
+                                                <div class="text-left">
+                                                    <p
+                                                        class="text-[9px] font-bold text-black uppercase tracking-widest mb-0.5">
+                                                        Pagamento via PIX</p>
+                                                    <p class="font-mono text-sm font-bold text-black select-all"
+                                                        id="orc-chave-pix">---</p>
+                                                    <p class="text-[8px] text-gray-500 mt-0.5">Escaneie ou copie a chave
+                                                    </p>
+                                                </div>
+                                                <div id="qr-code-pix-container"
+                                                    class="hidden bg-white p-1 rounded border border-gray-200 flex-shrink-0">
+                                                    <img id="qr-code-pix-img" class="h-12 w-12 object-contain">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- LADO DIREITO: TOTAIS (Fixo) -->
+                                        <div class="w-56 flex-shrink-0 bg-white">
+                                            <table class="w-full text-xs">
+                                                <tbody class="divide-y divide-gray-100">
+                                                    <tr>
+                                                        <td class="p-1 pl-2 text-right text-gray-600">Subtotal:</td>
+                                                        <td class="p-1 pr-2 text-right font-mono"
+                                                            id="orc-subtotal-produtos">R$ 0,00</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="p-1 pl-2 text-right text-gray-600">Mão de Obra:</td>
+                                                        <td class="p-1 pr-2 text-right font-mono"
+                                                            id="orc-subtotal-mao-obra">R$ 0,00</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="p-1 pl-2 text-right text-gray-600">Frete:</td>
+                                                        <td class="p-1 pr-2 text-right font-mono"
+                                                            id="orc-subtotal-frete">R$ 0,00</td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot class="bg-gray-100 font-bold border-t-2 border-gray-400">
+                                                    <tr>
+                                                        <td class="p-2 pl-2 text-right uppercase text-sm">Total Final
+                                                        </td>
+                                                        <td class="p-2 pr-2 text-right font-mono text-[20px]"
+                                                            id="orc-valor">R$ 0,00</td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- TERMOS -->
+                <section id="pdf-terms-border" class="mb-1 border-t border-black pt-1 mt-1.5">
+                    <h4 class="font-bold text-[9px] text-black mb-0.5 uppercase">Termos e Condições Comerciais</h4>
+                    <div class="text-xs text-gray-600 grid grid-cols-1 md:grid-cols-2 gap-1 leading-tight">
+                        <ul class="list-disc list-inside space-y-0.5">
+                            <li><strong>Validade:</strong> Este orçamento é válido por 15 dias corridos.</li>
+                            <li><strong>Pagamento:</strong> Conforme definido acima.</li>
+                        </ul>
+                        <ul class="list-disc list-inside space-y-0.5">
+                            <li><strong>Garantia:</strong> 90 dias legal.</li>
+                            <li><strong>Cancelamento:</strong> Mínimo 48h antecedência.</li>
+                        </ul>
+                    </div>
+                </section>
+
+        </div>
+
+        <!-- RODAPÉ -->
+        <footer class="bg-gray-50 border-t border-gray-300 p-1 text-center text-[10px] text-gray-500">
+            <p class="mb-0.5 font-semibold text-black">Obrigado pela preferência!</p>
+            <p id="footer-contact" class="mb-0.5">Em caso de dúvidas, entre em contato através dos canais informados
+                acima.</p>
+            <p class="text-[9px] text-gray-400">Este documento foi gerado automaticamente pelo sistema OrçaFácil.</p>
+        </footer>
+
+    </main>
+
+    <!-- Navbar removida do print -->
+    <!-- Navegação Inferior Premium -->
+    <nav
+        class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md border border-slate-200 rounded-full shadow-2xl p-2 flex items-center gap-1 z-50 whitespace-nowrap scale-90 md:scale-100 transition-all origin-bottom print:hidden no-print">
+        <a href="dashboard.html"
+            class="flex items-center gap-2 px-4 py-2.5 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-house text-lg"></i> <span class="hidden md:inline">Dashboard</span>
+        </a>
+        <a href="orcamentos.html"
+            class="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-full font-bold text-sm shadow-lg shadow-blue-500/30 transition-all">
+            <i class="ph-bold ph-file-text text-lg"></i> <span class="hidden md:inline">Orçamentos</span>
+        </a>
+        <a href="criar-orcamento.html"
+            class="flex items-center gap-2 px-4 py-2.5 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-plus text-lg"></i> <span class="hidden md:inline">Novo</span>
+        </a>
+        <a href="clientes.html"
+            class="flex items-center gap-2 px-4 py-2.5 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-users text-lg"></i> <span class="hidden md:inline">Clientes</span>
+        </a>
+        <a href="catalogo.html"
+            class="flex items-center gap-2 px-4 py-2.5 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-cube text-lg"></i> <span class="hidden md:inline">Itens</span>
+        </a>
+        <a href="ajustes.html"
+            class="flex items-center gap-2 px-4 py-2.5 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-gear text-lg"></i> <span class="hidden md:inline">Config</span>
+        </a>
+    </nav>
+
+    <script src="app.js?v=1001"></script>
+    <script>
+        // Correção de Logo Duplo
+        // Monitora o carregamento da imagem e esconde o placeholder
+        const logoImg = document.getElementById('empresa-logo-img');
+        const logoContainer = document.getElementById('logo-container');
+
+        // Observer para verificar quando/se o app.js remove a classe 'hidden' da imagem
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'class') {
+                    if (!logoImg.classList.contains('hidden')) {
+                        // Se a imagem apareceu, adiciona classe ao pai para esconder o placeholder via CSS
+                        logoContainer.classList.add('has-logo');
+                    } else {
+                        logoContainer.classList.remove('has-logo');
+                    }
+                }
+            });
+        });
+        observer.observe(logoImg, { attributes: true });
+
+        // Backup caso app.js mude o src mas esqueça do hidden
+        logoImg.onload = function () {
+            if (this.src && this.src !== window.location.href) {
+                this.classList.remove('hidden');
+                logoContainer.classList.add('has-logo');
+            }
+        };
+
+        function baixarPDF() {
+            const element = document.getElementById('documento-pdf');
+            const btn = document.querySelector('button[onclick="baixarPDF()"]');
+            const originalText = btn.innerHTML;
+
+            // Feedback Visual
+            btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> Processando...';
+            btn.disabled = true;
+
+            // Overlay Simples
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.95);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;';
+            overlay.innerHTML = '<i class="ph-bold ph-file-pdf text-4xl text-neutral-900 mb-2 animate-bounce"></i><span class="text-neutral-600 font-bold">Gerando PDF...</span>';
+            document.body.appendChild(overlay);
+
+            setTimeout(() => {
+                const clone = element.cloneNode(true);
+
+                // Força cores seguras via injeção de estilo no clone para garantir compatibilidade
+                // Mas NÃO sobrescreve estilos inline (que têm a cor da empresa)
+                const safeStyle = document.createElement('style');
+                safeStyle.innerHTML = `
+                    * { 
+                        -webkit-print-color-adjust: exact !important; 
+                        print-color-adjust: exact !important; 
+                        font-family: sans-serif !important; /* Fallback de fonte seguro */
+                    }
+                    /* Força cores padrão apenas onde não há inline style */
+                    .bg-neutral-900:not([style*="background"]), .bg-black:not([style*="background"]) { background-color: #000000 !important; color: #ffffff !important; }
+                    .text-white { color: #ffffff !important; }
+                    .text-black, .text-neutral-900 { color: #000000 !important; }
+                    .text-gray-500, .text-gray-600 { color: #555555 !important; }
+                    .bg-gray-50 { background-color: #f9fafb !important; }
+                    /* NÃO forçar border-color para permitir cores personalizadas inline */
+                    
+                    /* Limpa sombras e efeitos */
+                    .shadow-2xl, .print-shadow { box-shadow: none !important; margin: 0 !important; }
+                `;
+                clone.appendChild(safeStyle);
+
+                // Container fora da tela CONFIGURADO PARA 190mm (210mm - 20mm de margens)
+                // Isso força o layout a se reacomodar em uma largura menor, prevenindo cortes
+                const container = document.createElement('div');
+                container.style.position = 'fixed';
+                container.style.top = '-10000px';
+                container.style.width = '190mm'; // <--- AJUSTE CRÍTICO: Menor que A4
+
+                // Remove a classe de largura fixa do clone para ele respeitar o container de 190mm
+                clone.style.width = '100%';
+                clone.classList.remove('md:w-[210mm]');
+                clone.classList.remove('w-full');
+
+                container.appendChild(clone);
+                document.body.appendChild(container);
+
+                const opt = {
+                    margin: 10, // Margens de 10mm (Total layout = 190 + 10 + 10 = 210mm)
+                    filename: `Orcamento_${new Date().getTime()}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                html2pdf().set(opt).from(clone).save()
+                    .then(() => {
+                        document.body.removeChild(container);
+                        document.body.removeChild(overlay);
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                        document.body.removeChild(container);
+                        document.body.removeChild(overlay);
+                        // Fallback silencioso ou alerta explicativo
+                        alert("Não foi possível gerar o arquivo automaticamente. Tentando modo de impressão...");
+                        window.print();
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    });
+            }, 800);
+        }
+    </script>
+</body>
+
+</html>
