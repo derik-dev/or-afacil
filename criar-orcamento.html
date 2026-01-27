@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Orçamento • OrçaFácil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Previne zoom no iOS */
+        input,
+        select,
+        textarea {
+            font-size: 16px !important;
+        }
+
+        @media (min-width: 768px) {
+
+            input,
+            select,
+            textarea {
+                font-size: 0.875rem !important;
+            }
+        }
+    </style>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="bg-[#F0F4F8] text-slate-800 min-h-screen flex flex-col">
+
+    <header class="w-full px-8 py-6 flex justify-between items-center bg-transparent">
+        <a href="dashboard.html"
+            class="flex items-center gap-2 text-slate-800 hover:opacity-80 transition-opacity group">
+            <div
+                class="bg-blue-600 text-white p-1.5 rounded-lg group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/20">
+                <i class="ph-bold ph-hexagon text-xl"></i>
+            </div>
+            <span class="font-bold text-xl tracking-tight text-blue-900">OrçaFácil</span>
+        </a>
+    </header>
+
+    <main class="flex-1 flex flex-col items-center justify-center p-4 pb-32">
+        <h1 class="text-2xl md:text-3xl font-bold text-slate-900 mb-8 flex items-center gap-2">
+            <i class="ph-duotone ph-file-plus text-blue-600"></i> Criar Novo Orçamento
+        </h1>
+
+        <div class="bg-white w-full max-w-4xl p-8 rounded-xl shadow-xl shadow-slate-200/60 border border-slate-100">
+            <form id="form-criar-completo" class="space-y-8">
+                <!-- Seção Cliente -->
+                <!-- Seção Cliente (Redesenhada) -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-sm font-bold text-slate-800 uppercase flex items-center gap-2">
+                            <i class="ph-bold ph-user text-blue-600"></i> Informações do Cliente
+                        </h3>
+                        <button type="button" onclick="toggleNovoCliente()"
+                            class="text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5">
+                            <i class="ph-bold ph-plus-circle"></i> <span id="btn-novo-cliente-text">Novo Cliente</span>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Selecione o Cliente
+                                *</label>
+                            <div class="relative group">
+                                <span
+                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-blue-500 transition-colors">
+                                    <i class="ph-bold ph-magnifying-glass text-lg"></i>
+                                </span>
+                                <select id="select-cliente"
+                                    class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white appearance-none transition-all cursor-pointer text-sm font-bold text-slate-700 hover:border-blue-300">
+                                    <option value="">Buscar cliente...</option>
+                                </select>
+                                <i
+                                    class="ph-bold ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Data de
+                                Validade</label>
+                            <div class="relative group">
+                                <span
+                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-blue-500 transition-colors">
+                                    <i class="ph-bold ph-calendar-blank text-lg"></i>
+                                </span>
+                                <input type="date" id="input-validade"
+                                    class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all text-sm font-medium text-slate-600 cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulário Inline Novo Cliente (Estilizado) -->
+                    <div id="form-novo-cliente"
+                        class="hidden mt-6 p-5 bg-blue-50/50 border border-blue-100 rounded-xl animate-fade-in-down">
+                        <div class="flex justify-between items-center mb-4 border-b border-blue-100 pb-2">
+                            <p class="text-xs font-bold text-blue-800 uppercase flex items-center gap-2">
+                                <i class="ph-fill ph-user-plus"></i> Cadastro Rápido
+                            </p>
+                            <button type="button" onclick="toggleNovoCliente()"
+                                class="text-slate-400 hover:text-red-500 transition-colors"><i
+                                    class="ph-bold ph-x"></i></button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" id="novo-cli-nome" placeholder="Nome Completo *"
+                                class="col-span-1 md:col-span-2 px-4 py-2.5 text-sm bg-white border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 shadow-sm">
+
+                            <input type="tel" id="novo-cli-phone" placeholder="Telemóvel"
+                                class="px-4 py-2.5 text-sm bg-white border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 shadow-sm">
+
+                            <input type="email" id="novo-cli-email" placeholder="E-mail"
+                                class="px-4 py-2.5 text-sm bg-white border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 shadow-sm">
+
+                            <input type="text" id="novo-cli-cpf" placeholder="NIF (Opcional)"
+                                class="px-4 py-2.5 text-sm bg-white border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 shadow-sm">
+
+                            <input type="text" id="novo-cli-empresa" placeholder="Empresa / Loja"
+                                class="px-4 py-2.5 text-sm bg-white border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 shadow-sm">
+
+                            <input type="text" id="novo-cli-endereco" placeholder="Morada Completa"
+                                class="col-span-1 md:col-span-2 px-4 py-2.5 text-sm bg-white border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 shadow-sm">
+                        </div>
+
+                        <div class="flex gap-3 pt-4">
+                            <button type="button" onclick="salvarClienteRapido()"
+                                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 px-4 rounded-lg transition-all shadow-md shadow-blue-500/20 flex items-center justify-center gap-2">
+                                <i class="ph-bold ph-check"></i> Salvar Cliente
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seção Itens -->
+                <!-- Seção Itens (Redesenhada) -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-600">
+                                <i class="ph-duotone ph-cube text-2xl"></i>
+                            </div>
+                            <h3 class="text-sm font-bold text-slate-800 leading-tight">
+                                PRODUTOS &<br>SERVIÇOS
+                            </h3>
+                        </div>
+                        <button type="button" onclick="abrirModalItens()"
+                            class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-5 py-2.5 rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-slate-500/20 active:scale-95 group">
+                            <i class="ph-bold ph-plus group-hover:rotate-90 transition-transform"></i> Adicionar Item
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead
+                                    class="bg-slate-50/80 text-slate-500 font-bold border-b border-slate-200 text-[11px] uppercase tracking-wider">
+                                    <tr>
+                                        <th class="p-4 pl-6">Descrição do Item</th>
+                                        <th class="p-4 w-24 text-center">Qtd</th>
+                                        <th class="p-4 w-32 text-right">Valor</th>
+                                        <th class="p-4 w-14 text-center"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-itens-orcamento" class="divide-y divide-slate-100 bg-white"></tbody>
+                            </table>
+                        </div>
+
+                        <!-- Empty State -->
+                        <div id="empty-itens" class="p-12 text-center text-slate-300 flex flex-col items-center">
+                            <i class="ph-duotone ph-package text-4xl mb-3 opacity-40"></i>
+                            <span class="text-sm font-medium text-slate-500">Sua lista está vazia</span>
+                        </div>
+
+                        <!-- Resumo de Totais -->
+                        <div class="p-6 bg-slate-50 border-t border-slate-200 space-y-3">
+                            <div class="flex justify-between items-center text-xs font-medium text-slate-500">
+                                <span class="pl-2">Subtotal Produtos</span>
+                                <span class="pr-4" id="subtotal-produtos">--</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs font-medium text-slate-500">
+                                <span class="pl-2">Mão de Obra</span>
+                                <span class="pr-4" id="subtotal-mao-obra">--</span>
+                            </div>
+                            <div
+                                class="flex justify-between items-center text-xs font-medium text-slate-500 pb-3 border-b border-slate-200">
+                                <span class="pl-2">Frete / Entregas</span>
+                                <span class="pr-4" id="subtotal-frete">--</span>
+                            </div>
+                            <div class="flex justify-between items-center pt-2">
+                                <div class="flex flex-col pl-2">
+                                    <span
+                                        class="text-[10px] font-bold text-slate-500 uppercase tracking-wider leading-none">TOTAL</span>
+                                    <span
+                                        class="text-xs font-bold text-slate-800 uppercase tracking-wider leading-none mt-0.5">CALCULADO</span>
+                                </div>
+                                <span class="text-xl font-bold text-blue-600 pr-4" id="subtotal-display">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <textarea id="input-descricao" class="hidden"></textarea>
+                    <input type="hidden" id="input-mao-obra-total" value="0">
+                    <input type="hidden" id="input-itens-json">
+                </div>
+
+                <!-- Seção Pagamento e Valores Redesenhada -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+
+                    <!-- Coluna 1: Valor e Detalhes -->
+                    <div class="space-y-6">
+
+                        <!-- Box de Valor Principal -->
+                        <div class="bg-blue-50 p-5 rounded-xl border border-blue-100 shadow-sm">
+                            <label class="block text-xs font-bold text-blue-900 mb-3 uppercase flex items-center gap-1">
+                                <i class="ph-bold ph-currency-dollar"></i> Valor Total do Orçamento
+                            </label>
+
+                            <div class="flex gap-3">
+                                <!-- Seletor de Moeda -->
+                                <div class="w-1/3 min-w-[110px] relative">
+                                    <select id="select-moeda" onchange="onMoedaChange()"
+                                        class="w-full pl-3 pr-8 py-3.5 bg-white border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 appearance-none transition-all cursor-pointer text-sm font-bold text-blue-900 shadow-sm hover:border-blue-300">
+                                        <option value="EUR" selected>🇪🇺 Euro</option>
+                                        <option value="BRL">🇧🇷 Real</option>
+                                        <option value="USD">🇺🇸 Dólar</option>
+                                    </select>
+                                    <i
+                                        class="ph-bold ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-blue-400 pointer-events-none"></i>
+                                </div>
+
+                                <!-- Input de Valor -->
+                                <div class="flex-1 relative">
+                                    <span id="currency-symbol"
+                                        class="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600 font-bold text-lg select-none">€</span>
+                                    <input type="text" inputmode="decimal" id="input-valor" placeholder="0,00"
+                                        class="w-full pl-12 pr-4 py-3.5 bg-white border border-blue-200 rounded-lg text-blue-700 font-bold text-xl focus:outline-none focus:border-blue-500 ring-4 ring-blue-500/5 transition-all shadow-sm">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prazo -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase">Prazo de Entrega
+                                (Dias)</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                                    <i class="ph-bold ph-calendar-check text-lg"></i>
+                                </span>
+                                <input type="number" id="input-prazo" placeholder="Ex: 15"
+                                    class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all font-medium">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coluna 2: Configuração de Pagamento -->
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 h-fit">
+                        <h3 class="text-sm font-bold text-slate-800 uppercase mb-4 flex items-center gap-2">
+                            <i class="ph-bold ph-wallet text-slate-500"></i> Dados de Pagamento
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">Método
+                                    Preferencial</label>
+                                <div class="relative">
+                                    <select id="select-pagamento" onchange="togglePixFields()"
+                                        class="w-full pl-4 pr-10 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 appearance-none transition-all cursor-pointer text-sm font-medium shadow-sm hover:border-blue-300 text-slate-700">
+                                        <option value="boleto">Boleto Bancário</option>
+                                        <option value="credito">Cartão de Crédito</option>
+                                        <option value="debito">Cartão de Débito</option>
+                                        <option value="pix">PIX / Transferência</option>
+                                        <option value="dinheiro">Dinheiro / À Vista</option>
+                                    </select>
+                                    <i
+                                        class="ph-bold ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                                </div>
+                            </div>
+
+                            <div id="pix-fields"
+                                class="hidden animate-fade-in-down pt-2 border-t border-slate-200 mt-2">
+                                <div class="mb-3">
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">Chave PIX
+                                        / IBAN</label>
+                                    <input type="text" id="input-chave-pix" placeholder="Digite a chave ou IBAN..."
+                                        class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-all">
+                                </div>
+                                <div id="pix-qr-preview-container"
+                                    class="hidden flex items-center gap-3 p-3 bg-indigo-50 rounded-lg border border-indigo-100">
+                                    <img id="pix-qr-preview-img" src=""
+                                        class="w-12 h-12 object-contain bg-white rounded border border-slate-200 p-0.5">
+                                    <div class="flex-1">
+                                        <p class="text-xs font-bold text-indigo-900">QR Code Vinculado</p>
+                                        <p class="text-[10px] text-indigo-600 leading-tight">Este código será impresso
+                                            no orçamento.</p>
+                                    </div>
+                                    <i class="ph-fill ph-check-circle text-indigo-400 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-8 flex gap-4 border-t border-slate-100">
+                    <button type="button" onclick="history.back()"
+                        class="px-6 py-3.5 bg-white border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-all">Cancelar</button>
+                    <button type="button" onclick="salvarOrcamentoCompleto()"
+                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-500/20 active:scale-[0.99] transition-all flex justify-center items-center gap-2"><i
+                            class="ph-bold ph-floppy-disk text-lg"></i> Salvar e Gerar</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Modal Seleção de Itens -->
+    <div id="modal-selecao-item" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="fecharModalItens()">
+        </div>
+        <div
+            class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl p-6 flex flex-col max-h-[85vh] animate-scale-in">
+            <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-4">
+                <h3 class="font-bold text-lg text-slate-900">Adicionar Item</h3>
+                <button onclick="fecharModalItens()"
+                    class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-red-500 transition-colors"><i
+                        class="ph-bold ph-x text-lg"></i></button>
+            </div>
+            <div class="mb-4">
+                <div class="relative">
+                    <i class="ph-bold ph-magnifying-glass absolute left-3 top-3 text-slate-400"></i>
+                    <input type="text" id="busca-item-modal" onkeyup="filtrarItensModal()"
+                        placeholder="Buscar produto ou serviço..."
+                        class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 text-sm transition-all mb-3">
+                </div>
+                <div class="flex gap-4 text-xs font-bold justify-between items-center">
+                    <button type="button" onclick="toggleNovoItem()"
+                        class="text-blue-600 hover:underline flex items-center gap-1">
+                        <i class="ph-bold ph-plus-circle"></i> <span id="btn-novo-item-text">Cadastrar Novo Item</span>
+                    </button>
+                    <button type="button" onclick="recarregarItensModal()"
+                        class="text-slate-500 hover:text-blue-600 flex items-center gap-1"><i
+                            class="ph-bold ph-arrows-clockwise"></i> Atualizar</button>
+                </div>
+
+                <!-- Formulário Inline Novo Item -->
+                <div id="form-novo-item"
+                    class="hidden mt-3 p-4 bg-green-50 border border-green-200 rounded-lg space-y-3">
+                    <p class="text-xs font-bold text-green-800 uppercase">Cadastro Rápido de Item</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="novo-item-nome" placeholder="Nome do item *"
+                            class="col-span-2 px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-green-500">
+                        <select id="novo-item-tipo" onchange="toggleNovoItemTipo()"
+                            class="px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-green-500">
+                            <option value="Serviço">Serviço</option>
+                            <option value="Produto">Produto</option>
+                        </select>
+                        <input type="text" inputmode="decimal" id="novo-item-preco" placeholder="Preço (R$) *"
+                            class="px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-green-500">
+
+                        <!-- Box Dinâmico -->
+                        <div id="novo-box-mao-obra" class="w-full">
+                            <input type="text" inputmode="decimal" id="novo-item-mao-obra"
+                                placeholder="Mão de Obra (R$)"
+                                class="w-full px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-green-500">
+                        </div>
+                        <div id="novo-box-frete" class="w-full hidden">
+                            <input type="text" inputmode="decimal" id="novo-item-frete" placeholder="Frete (R$)"
+                                class="w-full px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-green-500">
+                        </div>
+
+                        <input type="text" id="novo-item-descricao" placeholder="Descrição"
+                            class="col-span-2 px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-green-500">
+                    </div>
+                    <div class="flex gap-2 pt-2">
+                        <button type="button" onclick="salvarItemRapido()"
+                            class="flex-1 bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 px-3 rounded-lg transition-colors flex items-center justify-center gap-1">
+                            <i class="ph-bold ph-check"></i> Salvar e Adicionar
+                        </button>
+                        <button type="button" onclick="toggleNovoItem()"
+                            class="px-3 py-2 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-50">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto custom-scrollbar pr-1">
+                <ul id="lista-itens-disponiveis" class="space-y-2">
+                    <li class="p-8 text-center text-slate-400 flex flex-col items-center"><i
+                            class="ph-bold ph-spinner animate-spin text-2xl mb-2"></i> Carregando catálogo...</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegação Inferior Premium -->
+    <nav
+        class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md border border-slate-200 rounded-full shadow-2xl p-2 flex items-center gap-1 z-50 whitespace-nowrap scale-90 md:scale-100 transition-all origin-bottom print:hidden">
+        <a href="dashboard.html"
+            class="flex items-center gap-2 px-4 py-2.5 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-house text-lg"></i> <span class="hidden md:inline">Dashboard</span>
+        </a>
+        <a href="orcamentos.html"
+            class="flex items-center gap-2 px-4 py-2.5 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-file-text text-lg"></i> <span class="hidden md:inline">Orçamentos</span>
+        </a>
+        <a href="criar-orcamento.html"
+            class="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-full font-bold text-sm shadow-lg shadow-blue-500/30 transition-all">
+            <i class="ph-bold ph-plus text-lg"></i> <span class="hidden md:inline">Novo</span>
+        </a>
+        <a href="clientes.html"
+            class="flex items-center gap-2 px-4 py-2.5 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-users text-lg"></i> <span class="hidden md:inline">Clientes</span>
+        </a>
+        <a href="catalogo.html"
+            class="flex items-center gap-2 px-4 py-2.5 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-cube text-lg"></i> <span class="hidden md:inline">Itens</span>
+        </a>
+        <a href="ajustes.html"
+            class="flex items-center gap-2 px-4 py-2.5 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-gear text-lg"></i> <span class="hidden md:inline">Config</span>
+        </a>
+    </nav>
+
+    <script src="app.js?v=1000"></script>
+    <script>
+        let itensOrcamento = [];
+        let itensCatalogo = [];
+
+        // Inicializa moeda na página
+        function inicializarMoeda() {
+            const moeda = localStorage.getItem('orcafacil_moeda') || 'EUR';
+            const simbolos = { 'EUR': '€', 'BRL': 'R$', 'USD': '$' };
+            const simbolo = simbolos[moeda] || '€';
+
+            // Atualiza símbolo do input
+            const currencySymbol = document.getElementById('currency-symbol');
+            if (currencySymbol) currencySymbol.innerText = simbolo;
+
+            // Atualiza select se existir
+            const selectMoeda = document.getElementById('select-moeda');
+            if (selectMoeda) selectMoeda.value = moeda;
+
+            // Atualiza subtotais com valores zerados iniciais
+            atualizarTabelaItens();
+        }
+
+        // Atualiza moeda quando select muda
+        function onMoedaChange() {
+            atualizarTabelaItens();
+            const moeda = document.getElementById('select-moeda')?.value || 'EUR';
+            const simbolos = { 'EUR': '€', 'BRL': 'R$', 'USD': '$' };
+            const currencySymbol = document.getElementById('currency-symbol');
+            if (currencySymbol) currencySymbol.innerText = simbolos[moeda] || '€';
+
+            // Atualiza a lista de itens no modal se estiver aberto
+            if (itensCatalogo.length > 0) {
+                renderizarListaModal(itensCatalogo);
+            }
+        }
+
+        // Executa ao carregar
+        window.addEventListener('load', inicializarMoeda);
+
+        // Lógica de manipulação de itens
+        function carregarItensModal() {
+            const ul = document.getElementById('lista-itens-disponiveis');
+            // Elemento 'sb' vem do app.js que carrega globalmente (após DOMContentLoaded, mas onclick pode chamar depois)
+            // Para garantir: verifica se sb existe. Se não, espera ou tenta pegar de window.supabase
+            if (!window.supabase && !sb) return ul.innerHTML = '<li class="p-4 text-center text-red-400">Erro: Conexão DB.</li>';
+
+            // Reutiliza função do app.js se possível, mas aqui é lógica local de UI
+            // Vamos fazer a query direta pro supabase caso app.js já tenha inicializado 'sb'
+            if (itensCatalogo.length > 0) { renderizarListaModal(itensCatalogo); return; }
+
+            const fetchItens = async () => {
+                const { data } = await sb.from('itens').select('*').order('nome');
+                itensCatalogo = data || [];
+                renderizarListaModal(itensCatalogo);
+            };
+            fetchItens();
+        }
+
+        function renderizarListaModal(lista) {
+            const ul = document.getElementById('lista-itens-disponiveis');
+            ul.innerHTML = '';
+            if (lista.length === 0) { ul.innerHTML = '<li class="p-8 text-center text-slate-400 flex flex-col items-center"><i class="ph-duotone ph-magnifying-glass text-2xl mb-2 opacity-50"></i> Nenhum item encontrado.</li>'; return; }
+
+            // Obtém a moeda selecionada (do select ou localStorage)
+            const moedaSel = document.getElementById('select-moeda')?.value || localStorage.getItem('orcafacil_moeda') || 'BRL';
+
+            lista.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'group p-4 bg-slate-50 hover:bg-blue-50 border border-slate-100 rounded-xl cursor-pointer flex justify-between items-center transition-all';
+                li.onclick = () => selecionarItem(item);
+                li.onclick = () => selecionarItem(item);
+
+                // Formatação robusta de moeda
+                let precoFormatado;
+                if (typeof formatarMoeda === 'function') {
+                    precoFormatado = formatarMoeda(item.preco, moedaSel);
+                } else {
+                    // Fallback local caso formatarMoeda não esteja disponível
+                    const config = {
+                        'BRL': { locale: 'pt-BR', currency: 'BRL' },
+                        'USD': { locale: 'en-US', currency: 'USD' },
+                        'EUR': { locale: 'de-DE', currency: 'EUR' }
+                    };
+                    const cfg = config[moedaSel] || config['BRL'];
+                    precoFormatado = parseFloat(item.preco).toLocaleString(cfg.locale, { style: 'currency', currency: cfg.currency });
+                }
+
+                li.innerHTML = `<div><p class="font-bold text-slate-800 group-hover:text-blue-700">${item.nome}</p><p class="text-xs text-slate-500 uppercase tracking-wider font-bold mt-0.5">${item.tipo || 'Item'}</p></div><div class="text-right"><p class="font-bold text-slate-900 text-sm">${precoFormatado}</p><span class="text-[10px] uppercase font-bold text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">Adicionar +</span></div>`;
+                ul.appendChild(li);
+            });
+        }
+
+        function selecionarItem(item) {
+            // Clona e adiciona default qtd 1
+            const novo = { ...item, qtd: 1 };
+            itensOrcamento.push(novo);
+            atualizarTabelaItens();
+            fecharModalItens();
+            const btn = document.querySelector('button[onclick="abrirModalItens()"]');
+            btn.innerHTML = `<i class="ph-bold ph-check"></i> Item Adicionado`;
+            setTimeout(() => { btn.innerHTML = `<i class="ph-bold ph-plus"></i> Adicionar Item`; }, 1000);
+        }
+
+        function removerItemOrcamento(index) {
+            itensOrcamento.splice(index, 1);
+            atualizarTabelaItens();
+        }
+
+        function atualizarQuantidade(index, novaQtd) {
+            let qtd = parseInt(novaQtd);
+            if (isNaN(qtd) || qtd < 1) qtd = 1;
+            itensOrcamento[index].qtd = qtd;
+            atualizarTabelaItens();
+        }
+
+        function atualizarTabelaItens() {
+            const tbody = document.getElementById('lista-itens-orcamento');
+            const empty = document.getElementById('empty-itens');
+            const totalDisplay = document.getElementById('subtotal-display');
+            const subtotalProdutos = document.getElementById('subtotal-produtos');
+            const subtotalMaoObra = document.getElementById('subtotal-mao-obra');
+            const subtotalFrete = document.getElementById('subtotal-frete');
+
+            const inputValor = document.getElementById('input-valor');
+            const inputDesc = document.getElementById('input-descricao');
+            const inputMaoObraTotal = document.getElementById('input-mao-obra-total');
+            const inputJson = document.getElementById('input-itens-json');
+
+            tbody.innerHTML = '';
+            let totalProd = 0;
+            let totalMO = 0;
+            let totalFrete = 0;
+            let descricaoTexto = '';
+
+            if (itensOrcamento.length === 0) { empty.classList.remove('hidden'); }
+            else {
+                empty.classList.add('hidden');
+                itensOrcamento.forEach((item, index) => {
+                    const qtd = item.qtd || 1;
+                    const preco = Number(item.preco) || 0;
+                    const maoObra = Number(item.mao_de_obra) || 0;
+                    const frete = Number(item.frete) || 0;
+
+                    const subProd = preco * qtd;
+                    const subMO = maoObra * qtd;
+                    const subFrete = frete * qtd;
+
+                    totalProd += subProd;
+                    totalMO += subMO;
+                    totalFrete += subFrete;
+
+                    const valorTotalItem = subProd + subMO + subFrete;
+
+                    // Monta texto legado (usa moeda selecionada)
+                    const moedaSel = document.getElementById('select-moeda')?.value || localStorage.getItem('orcafacil_moeda') || 'BRL';
+                    descricaoTexto += `• ${qtd}x ${item.nome} - ${formatarMoeda(subProd, moedaSel)}`;
+                    if (subMO > 0) descricaoTexto += ` + M.O: ${formatarMoeda(subMO, moedaSel)}`;
+                    if (subFrete > 0) descricaoTexto += ` + Frete: ${formatarMoeda(subFrete, moedaSel)}`;
+                    if (item.descricao) descricaoTexto += `\n  (${item.descricao})`;
+                    descricaoTexto += '\n';
+
+                    tbody.innerHTML += `
+                    <tr class="group hover:bg-slate-50">
+                        <td class="p-3 pl-4">
+                            <div class="font-bold text-slate-700 text-sm">${item.nome}</div>
+                            <div class="text-xs text-slate-400 truncate max-w-[150px]">${item.descricao || ''}</div>
+                        </td>
+                        <td class="p-3 text-center">
+                            <input type="number" min="1" value="${qtd}" onchange="atualizarQuantidade(${index}, this.value)" 
+                                class="w-16 p-1 text-center bg-white border border-slate-200 rounded text-sm font-bold focus:border-blue-500 focus:outline-none">
+                        </td>
+                        <td class="p-3 text-right font-bold text-slate-600 text-sm">
+                            ${formatarMoeda(valorTotalItem, moedaSel)}
+                        </td>
+                        <td class="p-3 text-center">
+                            <button type="button" onclick="removerItemOrcamento(${index})" class="text-slate-300 hover:text-red-500 p-1.5 rounded-full hover:bg-red-50 transition-colors">
+                                <i class="ph-bold ph-trash"></i>
+                            </button>
+                        </td>
+                    </tr>`;
+                });
+            }
+
+            const total = totalProd + totalMO + totalFrete;
+
+            // Obtém a moeda selecionada
+            const moeda = document.getElementById('select-moeda')?.value || localStorage.getItem('orcafacil_moeda') || 'BRL';
+
+            // Atualiza displays com moeda correta
+            subtotalProdutos.innerText = formatarMoeda(totalProd, moeda);
+            subtotalMaoObra.innerText = formatarMoeda(totalMO, moeda);
+            if (subtotalFrete) subtotalFrete.innerText = formatarMoeda(totalFrete, moeda);
+            totalDisplay.innerText = formatarMoeda(total, moeda);
+
+            // Campos ocultos para salvar
+            inputValor.value = total.toFixed(2).replace('.', ',');
+            inputMaoObraTotal.value = totalMO.toFixed(2);
+            inputDesc.value = descricaoTexto.trim();
+            inputJson.value = JSON.stringify(itensOrcamento);
+        }
+
+        function filtrarItensModal() {
+            const termo = document.getElementById('busca-item-modal').value.toLowerCase();
+            const filtrados = itensCatalogo.filter(i => i.nome.toLowerCase().includes(termo));
+            renderizarListaModal(filtrados);
+        }
+
+        function abrirModalItens() {
+            document.getElementById('modal-selecao-item').classList.remove('hidden');
+            if (itensCatalogo.length === 0) {
+                carregarItensModal();
+            } else {
+                // Re-renderiza com a moeda atual se já tiver itens carregados
+                renderizarListaModal(itensCatalogo);
+            }
+            document.getElementById('busca-item-modal').focus();
+        }
+        function fecharModalItens() { document.getElementById('modal-selecao-item').classList.add('hidden'); }
+        function recarregarItensModal() { itensCatalogo = []; carregarItensModal(); }
+        let pixQrConfigurado = null;
+
+        async function carregarDadosEmpresaCriacao() {
+            try {
+                const { data: { user } } = await sb.auth.getUser();
+                if (user) {
+                    const { data: empresa } = await sb.from('empresas').select('pix, pix_qr, moeda_padrao').eq('user_id', user.id).maybeSingle();
+                    if (empresa) {
+                        // Carrega PIX
+                        if (empresa.pix && !document.getElementById('input-chave-pix').value) {
+                            document.getElementById('input-chave-pix').value = empresa.pix;
+                        }
+                        if (empresa.pix_qr) {
+                            pixQrConfigurado = empresa.pix_qr;
+                            document.getElementById('pix-qr-preview-img').src = empresa.pix_qr;
+                        }
+
+                        // Carrega Moeda Padrão
+                        if (empresa.moeda_padrao) {
+                            const selectMoeda = document.getElementById('select-moeda');
+                            if (selectMoeda) {
+                                selectMoeda.value = empresa.moeda_padrao;
+                                // Atualiza localStorage e símbolo
+                                localStorage.setItem('orcafacil_moeda', empresa.moeda_padrao);
+                                const simbolos = { 'BRL': 'R$', 'USD': '$', 'EUR': '€' };
+                                const currencySymbol = document.getElementById('currency-symbol');
+                                if (currencySymbol) currencySymbol.innerText = simbolos[empresa.moeda_padrao] || 'R$';
+                                // Atualiza lista de itens se já estiver carregada
+                                if (itensCatalogo.length > 0) {
+                                    renderizarListaModal(itensCatalogo);
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (e) { console.error("Erro ao carregar dados da empresa", e); }
+        }
+
+        function togglePixFields() {
+            const sel = document.getElementById('select-pagamento');
+            const opt = sel.options[sel.selectedIndex];
+            const pixDiv = document.getElementById('pix-fields');
+
+            // Verifica atributo data-tipo ou se o valor contem "pix"
+            const isPix = (opt && opt.getAttribute('data-tipo') === 'pix') || (sel.value.toLowerCase().includes('pix'));
+
+            if (isPix) {
+                pixDiv.classList.remove('hidden');
+                // Mostra preview se tiver QR Code
+                if (pixQrConfigurado) {
+                    document.getElementById('pix-qr-preview-container').classList.remove('hidden');
+                } else {
+                    document.getElementById('pix-qr-preview-container').classList.add('hidden');
+                }
+            } else {
+                pixDiv.classList.add('hidden');
+            }
+        }
+
+        // ========== CADASTRO RÁPIDO DE CLIENTE ==========
+        function toggleNovoCliente() {
+            const form = document.getElementById('form-novo-cliente');
+            const btn = document.getElementById('btn-novo-cliente-text');
+            if (form.classList.contains('hidden')) {
+                form.classList.remove('hidden');
+                btn.innerText = 'Fechar Formulário';
+                document.getElementById('novo-cli-nome').focus();
+            } else {
+                form.classList.add('hidden');
+                btn.innerText = 'Novo Cliente';
+            }
+        }
+
+        async function salvarClienteRapido() {
+            const nome = document.getElementById('novo-cli-nome').value.trim();
+            const phone = document.getElementById('novo-cli-phone').value.trim();
+            const email = document.getElementById('novo-cli-email').value.trim();
+            const empresa = document.getElementById('novo-cli-empresa').value.trim();
+            const cpf = document.getElementById('novo-cli-cpf').value.trim();
+            const endereco = document.getElementById('novo-cli-endereco').value.trim();
+
+            if (!nome) return alert("Digite o nome do cliente.");
+
+            try {
+                const { data: { user } } = await sb.auth.getUser();
+                const { data, error } = await sb.from('clientes').insert([{ nome, phone, email, empresa, cpf, endereco, user_id: user.id }]).select();
+                if (error) throw error;
+
+                // Atualiza o select e seleciona o novo cliente
+                await carregarSelectClientes();
+                document.getElementById('select-cliente').value = nome;
+
+                // Limpa e fecha o formulário
+                document.getElementById('novo-cli-nome').value = '';
+                document.getElementById('novo-cli-phone').value = '';
+                document.getElementById('novo-cli-email').value = '';
+                document.getElementById('novo-cli-empresa').value = '';
+                document.getElementById('novo-cli-cpf').value = '';
+                document.getElementById('novo-cli-endereco').value = '';
+                toggleNovoCliente();
+
+                alert("Cliente cadastrado com sucesso! ✅");
+            } catch (err) {
+                alert("Erro ao salvar cliente: " + err.message);
+            }
+        }
+
+        // ========== CADASTRO RÁPIDO DE ITEM ==========
+        function toggleNovoItem() {
+            const form = document.getElementById('form-novo-item');
+            const btn = document.getElementById('btn-novo-item-text');
+            if (form.classList.contains('hidden')) {
+                form.classList.remove('hidden');
+                btn.innerText = 'Fechar Formulário';
+                document.getElementById('novo-item-nome').focus();
+            } else {
+                form.classList.add('hidden');
+                btn.innerText = 'Cadastrar Novo Item';
+            }
+        }
+
+        function toggleNovoItemTipo() {
+            const tipo = document.getElementById('novo-item-tipo').value;
+            const boxMO = document.getElementById('novo-box-mao-obra');
+            const boxFrete = document.getElementById('novo-box-frete');
+
+            if (tipo === 'Produto') {
+                boxMO.classList.add('hidden');
+                boxFrete.classList.remove('hidden');
+            } else {
+                boxMO.classList.remove('hidden');
+                boxFrete.classList.add('hidden');
+            }
+        }
+
+        async function salvarItemRapido() {
+            const nome = document.getElementById('novo-item-nome').value.trim();
+            const tipo = document.getElementById('novo-item-tipo').value;
+            let preco = document.getElementById('novo-item-preco').value.replace(',', '.');
+            let maoObra = document.getElementById('novo-item-mao-obra').value.replace(',', '.') || '0';
+            let frete = document.getElementById('novo-item-frete').value.replace(',', '.') || '0';
+            const descricao = document.getElementById('novo-item-descricao').value.trim();
+
+            if (tipo === 'Produto') maoObra = 0;
+            if (tipo === 'Serviço') frete = 0;
+
+            if (!nome || !preco) return alert("Preencha nome e preço do item.");
+
+            preco = parseFloat(preco);
+            maoObra = parseFloat(maoObra);
+
+            if (isNaN(preco)) return alert("Preço inválido.");
+
+            try {
+                const { data: { user } } = await sb.auth.getUser();
+                const { data, error } = await sb.from('itens').insert([{ nome, tipo, preco, mao_de_obra: maoObra, frete, descricao, user_id: user.id }]).select();
+                if (error) throw error;
+
+                // Adiciona o item ao orçamento atual
+                const novoItem = { id: data[0].id, nome, tipo, preco, mao_de_obra: maoObra, frete, descricao };
+                selecionarItem(novoItem);
+
+                // Limpa o formulário
+                document.getElementById('novo-item-nome').value = '';
+                document.getElementById('novo-item-preco').value = '';
+                document.getElementById('novo-item-mao-obra').value = '';
+                document.getElementById('novo-item-frete').value = '';
+                document.getElementById('novo-item-descricao').value = '';
+                toggleNovoItem();
+
+                // Atualiza lista do modal
+                itensCatalogo = [];
+                carregarItensModal();
+
+            } catch (err) {
+                alert("Erro ao salvar item: " + err.message);
+            }
+        }
+
+        // Máscaras para Cadastro Rápido
+        // Máscaras (Adaptadas para Portugal)
+        const mascaraDoc = (val) => {
+            val = val.replace(/\D/g, "").slice(0, 9); // NIF tem 9 dígitos
+            // Formato 123 456 789
+            return val.replace(/(\d{3})(\d)/, "$1 $2")
+                .replace(/(\d{3}) (\d{3})(\d)/, "$1 $2 $3");
+        };
+
+        const mascaraTel = (val) => {
+            val = val.replace(/\D/g, "").slice(0, 9); // Tlm 9 dígitos
+            // Formato 912 345 678
+            return val.replace(/(\d{3})(\d)/, "$1 $2")
+                .replace(/(\d{3}) (\d{3})(\d)/, "$1 $2 $3");
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarDadosEmpresaCriacao();
+            const novoCliCpf = document.getElementById('novo-cli-cpf');
+            const novoCliPhone = document.getElementById('novo-cli-phone');
+
+            if (novoCliCpf) novoCliCpf.addEventListener('input', (e) => e.target.value = mascaraDoc(e.target.value));
+            if (novoCliPhone) novoCliPhone.addEventListener('input', (e) => e.target.value = mascaraTel(e.target.value));
+        });
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-scale-in {
+            animation: scaleIn 0.2s ease-out;
+        }
+    </style>
+</body>
+
+</html>
