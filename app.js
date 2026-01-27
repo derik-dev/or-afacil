@@ -924,9 +924,9 @@ async function salvarConfiguracoesSupabase() {
     const doc = document.getElementById('conf-doc').value;
     const tel = document.getElementById('conf-tel').value;
     const endereco = document.getElementById('conf-end').value;
-    const pix = document.getElementById('conf-pix').value;
+    const pix = document.getElementById('conf-pix') ? document.getElementById('conf-pix').value : '';
     const logo = document.getElementById('conf-logo').value;
-    const pix_qr = document.getElementById('conf-pix-qr').value;
+    const pix_qr = document.getElementById('conf-pix-qr') ? document.getElementById('conf-pix-qr').value : '';
     const cor_primaria = document.getElementById('conf-cor-primaria') ? document.getElementById('conf-cor-primaria').value : '#2563eb';
     const cor_secundaria = document.getElementById('conf-cor-secundaria') ? document.getElementById('conf-cor-secundaria').value : '#1e40af';
     const cor_texto = document.getElementById('conf-cor-texto') ? document.getElementById('conf-cor-texto').value : '#ffffff';

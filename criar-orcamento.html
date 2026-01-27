@@ -262,49 +262,39 @@
                 </div>
             </div>
 
-            <!-- Coluna 2: Configuração de Pagamento -->
-            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 h-fit">
+            <!-- Coluna 2: Formas de Pagamento -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 h-fit shadow-sm">
                 <h3 class="text-sm font-bold text-slate-800 uppercase mb-4 flex items-center gap-2">
-                    <i class="ph-bold ph-wallet text-slate-500"></i> Dados de Pagamento
+                    <i class="ph-bold ph-wallet text-slate-500"></i> Formas de Pagamento Aceitas
                 </h3>
 
                 <div class="space-y-4">
+                    <!-- Input de Adicionar -->
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">Método
-                            Preferencial</label>
-                        <div class="relative">
-                            <select id="select-pagamento" onchange="togglePixFields()"
-                                class="w-full pl-4 pr-10 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 appearance-none transition-all cursor-pointer text-sm font-medium shadow-sm hover:border-blue-300 text-slate-700">
-                                <option value="boleto">Boleto Bancário</option>
-                                <option value="credito">Cartão de Crédito</option>
-                                <option value="debito">Cartão de Débito</option>
-                                <option value="pix">PIX / Transferência</option>
-                                <option value="dinheiro">Dinheiro / À Vista</option>
-                            </select>
-                            <i
-                                class="ph-bold ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">Adicionar
+                            Método</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="input-nova-forma" placeholder="Ex: Cartão 3x..."
+                                class="flex-1 w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-all font-medium placeholder:text-slate-400">
+                            <button type="button" onclick="adicionarNaListaPagamento()"
+                                class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center gap-2 whitespace-nowrap shadow-md shadow-slate-500/20 active:scale-95">
+                                <i class="ph-bold ph-plus"></i> Adicionar
+                            </button>
                         </div>
                     </div>
 
-                    <div id="pix-fields" class="hidden animate-fade-in-down pt-2 border-t border-slate-200 mt-2">
-                        <div class="mb-3">
-                            <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">Chave PIX
-                                / IBAN</label>
-                            <input type="text" id="input-chave-pix" placeholder="Digite a chave ou IBAN..."
-                                class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-all">
-                        </div>
-                        <div id="pix-qr-preview-container"
-                            class="hidden flex items-center gap-3 p-3 bg-indigo-50 rounded-lg border border-indigo-100">
-                            <img id="pix-qr-preview-img" src=""
-                                class="w-12 h-12 object-contain bg-white rounded border border-slate-200 p-0.5">
-                            <div class="flex-1">
-                                <p class="text-xs font-bold text-indigo-900">QR Code Vinculado</p>
-                                <p class="text-[10px] text-indigo-600 leading-tight">Este código será impresso
-                                    no orçamento.</p>
-                            </div>
-                            <i class="ph-fill ph-check-circle text-indigo-400 text-xl"></i>
-                        </div>
+                    <!-- Lista de Formas Adicionadas -->
+                    <div class="space-y-2 max-h-[220px] overflow-y-auto pr-1 custom-scrollbar"
+                        id="container-lista-pagamentos">
+                        <!-- Itens serão renderizados via JS -->
                     </div>
+
+                    <p class="text-[10px] text-slate-400 leading-tight">
+                        <i class="ph-bold ph-info"></i> Estas opções aparecerão listadas no rodapé do orçamento.
+                    </p>
+
+                    <!-- Input oculto para compatibilidade com app.js -->
+                    <input type="hidden" id="select-pagamento">
                 </div>
             </div>
         </div>
@@ -368,40 +358,55 @@
 
                     <div class="space-y-3">
                         <input type="text" id="novo-item-nome" placeholder="Nome do item *"
-                            class="w-full px-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400">
+                            class="w-full px-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400 font-medium">
 
-                        <div class="flex gap-3">
-                            <div class="relative w-20 flex-shrink-0">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="relative">
                                 <select id="novo-item-tipo" onchange="toggleNovoItemTipo()"
-                                    class="w-full h-full px-2 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 appearance-none text-center font-medium text-slate-600 cursor-pointer">
-                                    <option value="Serviço">Sv</option>
-                                    <option value="Produto">Pr</option>
+                                    class="w-full px-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 appearance-none font-bold text-slate-600 cursor-pointer shadow-sm disabled:opacity-50">
+                                    <option value="Serviço">Serviço</option>
+                                    <option value="Produto">Produto</option>
                                 </select>
                                 <div
-                                    class="absolute inset-0 flex items-center justify-center pointer-events-none text-slate-400 hidden">
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
                                     <i class="ph-bold ph-caret-down"></i>
                                 </div>
                             </div>
-                            <div class="flex-1 relative">
-                                <input type="text" inputmode="decimal" id="novo-item-preco" placeholder="Preço (R$) *"
-                                    class="w-full px-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400">
+                            <div class="relative">
+                                <span
+                                    class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">R$</span>
+                                <input type="text" inputmode="decimal" id="novo-item-preco" placeholder="Preço *"
+                                    class="w-full pl-8 pr-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400 font-bold text-slate-700">
                             </div>
                         </div>
 
                         <!-- Campos Dinâmicos Compactos -->
                         <div id="novo-box-mao-obra" class="w-full">
-                            <input type="text" inputmode="decimal" id="novo-item-mao-obra"
-                                placeholder="Custo Mão de Obra (Opcional)"
-                                class="w-full px-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400">
+                            <label class="text-[10px] font-bold text-green-700 uppercase mb-1 ml-1 block">Custo Mão de
+                                Obra</label>
+                            <div class="relative">
+                                <span
+                                    class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">R$</span>
+                                <input type="text" inputmode="decimal" id="novo-item-mao-obra" placeholder="0,00"
+                                    class="w-full pl-8 pr-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400">
+                            </div>
                         </div>
                         <div id="novo-box-frete" class="w-full hidden">
-                            <input type="text" inputmode="decimal" id="novo-item-frete"
-                                placeholder="Custo Frete (Opcional)"
-                                class="w-full px-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400">
+                            <label class="text-[10px] font-bold text-green-700 uppercase mb-1 ml-1 block">Custo
+                                Frete</label>
+                            <div class="relative">
+                                <span
+                                    class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">R$</span>
+                                <input type="text" inputmode="decimal" id="novo-item-frete" placeholder="0,00"
+                                    class="w-full pl-8 pr-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400">
+                            </div>
                         </div>
 
-                        <input type="text" id="novo-item-descricao" placeholder="Descrição (Opcional)"
-                            class="w-full px-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400">
+                        <div>
+                            <textarea id="novo-item-descricao" placeholder="Descrição detalhada do item (Opcional)"
+                                rows="3"
+                                class="w-full px-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400 resize-none"></textarea>
+                        </div>
                     </div>
 
                     <div class="flex gap-3 pt-4">
@@ -679,33 +684,64 @@
         }
         function fecharModalItens() { document.getElementById('modal-selecao-item').classList.add('hidden'); }
         function recarregarItensModal() { itensCatalogo = []; carregarItensModal(); }
-        let pixQrConfigurado = null;
+        let formasPagamento = ['Dinheiro / Espécie', 'Transferência Bancária'];
+        let pixQrConfigurado = null; // Mantido apenas para evitar erros se referenciarem
+
+        function atualizarInputPagamento() {
+            document.getElementById('select-pagamento').value = formasPagamento.join(', ');
+        }
+
+        function renderizarListaPagamentos() {
+            const container = document.getElementById('container-lista-pagamentos');
+            container.innerHTML = '';
+
+            formasPagamento.forEach((forma, index) => {
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center p-3 bg-slate-50 border border-slate-100 rounded-lg group hover:border-blue-200 transition-colors';
+                div.innerHTML = `
+                    <span class="text-xs font-bold text-slate-700">${forma}</span>
+                    <button type="button" onclick="removerDaListaPagamento(${index})" 
+                        class="text-slate-400 hover:text-red-500 transition-colors p-1 rounded-md hover:bg-white">
+                        <i class="ph-bold ph-trash"></i>
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+            atualizarInputPagamento();
+        }
+
+        function adicionarNaListaPagamento() {
+            const input = document.getElementById('input-nova-forma');
+            const valor = input.value.trim();
+            if (!valor) return alert("Digite uma forma de pagamento.");
+
+            formasPagamento.push(valor);
+            input.value = '';
+            renderizarListaPagamentos();
+            input.focus();
+        }
+
+        function removerDaListaPagamento(index) {
+            formasPagamento.splice(index, 1);
+            renderizarListaPagamentos();
+        }
 
         async function carregarDadosEmpresaCriacao() {
             try {
                 const { data: { user } } = await sb.auth.getUser();
                 if (user) {
-                    const { data: empresa } = await sb.from('empresas').select('pix, pix_qr, moeda_padrao').eq('user_id', user.id).maybeSingle();
+                    const { data: empresa } = await sb.from('empresas').select('moeda_padrao').eq('user_id', user.id).maybeSingle();
                     if (empresa) {
-                        // Carrega PIX
-                        if (empresa.pix && !document.getElementById('input-chave-pix').value) {
-                            document.getElementById('input-chave-pix').value = empresa.pix;
-                        }
-                        if (empresa.pix_qr) {
-                            pixQrConfigurado = empresa.pix_qr;
-                            document.getElementById('pix-qr-preview-img').src = empresa.pix_qr;
-                        }
-
                         // Carrega Moeda Padrão
                         if (empresa.moeda_padrao) {
                             const selectMoeda = document.getElementById('select-moeda');
                             if (selectMoeda) {
                                 selectMoeda.value = empresa.moeda_padrao;
-                                // Atualiza localStorage e símbolo
                                 localStorage.setItem('orcafacil_moeda', empresa.moeda_padrao);
                                 const simbolos = { 'BRL': 'R$', 'USD': '$', 'EUR': '€' };
                                 const currencySymbol = document.getElementById('currency-symbol');
                                 if (currencySymbol) currencySymbol.innerText = simbolos[empresa.moeda_padrao] || 'R$';
+
                                 // Atualiza lista de itens se já estiver carregada
                                 if (itensCatalogo.length > 0) {
                                     renderizarListaModal(itensCatalogo);
@@ -717,26 +753,7 @@
             } catch (e) { console.error("Erro ao carregar dados da empresa", e); }
         }
 
-        function togglePixFields() {
-            const sel = document.getElementById('select-pagamento');
-            const opt = sel.options[sel.selectedIndex];
-            const pixDiv = document.getElementById('pix-fields');
-
-            // Verifica atributo data-tipo ou se o valor contem "pix"
-            const isPix = (opt && opt.getAttribute('data-tipo') === 'pix') || (sel.value.toLowerCase().includes('pix'));
-
-            if (isPix) {
-                pixDiv.classList.remove('hidden');
-                // Mostra preview se tiver QR Code
-                if (pixQrConfigurado) {
-                    document.getElementById('pix-qr-preview-container').classList.remove('hidden');
-                } else {
-                    document.getElementById('pix-qr-preview-container').classList.add('hidden');
-                }
-            } else {
-                pixDiv.classList.add('hidden');
-            }
-        }
+        // Removida a função togglePixFields pois não é mais usada
 
         // ========== CADASTRO RÁPIDO DE CLIENTE ==========
         function toggleNovoCliente() {
@@ -875,6 +892,7 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
+            renderizarListaPagamentos();
             carregarDadosEmpresaCriacao();
             const novoCliCpf = document.getElementById('novo-cli-cpf');
             const novoCliPhone = document.getElementById('novo-cli-phone');

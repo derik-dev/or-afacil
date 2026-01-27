@@ -43,6 +43,25 @@
                 margin: 0 !important;
             }
         }
+
+        /* Mobile Scale Fix (Zoom Out Simulation) */
+        @media screen and (max-width: 768px) {
+            #documento-pdf {
+                width: 130% !important;
+                /* Aumenta a largura base para caber o conteudo */
+                transform: scale(0.77);
+                /* Reduz a escala para caber na tela */
+                transform-origin: top left;
+                margin-left: 0;
+                margin-bottom: -200px;
+                /* Compensa o espaço sobrando em baixo */
+            }
+
+            body {
+                overflow-x: hidden;
+                /* Evita scroll horizontal indesejado por causa do width 130% */
+            }
+        }
     </style>
 </head>
 

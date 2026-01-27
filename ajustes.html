@@ -92,28 +92,7 @@
                     <i class="ph-duotone ph-wallet text-blue-600"></i> Dados Financeiros Padrão
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Chave PIX
-                                Padrão</label>
-                            <input type="text" id="conf-pix"
-                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white transition-all shadow-sm"
-                                placeholder="Email, NIF ou Aleatória">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">QR Code PIX
-                                (Imagem)</label>
-                            <input type="file" id="conf-pix-qr-input" accept="image/*" class="hidden"
-                                onchange="converterImagemBase64(this, 'conf-pix-qr')">
-                            <input type="hidden" id="conf-pix-qr">
-                            <div onclick="document.getElementById('conf-pix-qr-input').click()"
-                                class="w-full px-4 py-2.5 bg-slate-50 border border-dashed border-slate-300 rounded-lg cursor-pointer hover:bg-slate-100 transition-all flex items-center justify-center gap-2 text-slate-500 text-sm">
-                                <i class="ph-bold ph-qr-code"></i> <span id="btn-qr-text">Selecionar QR Code</span>
-                            </div>
-                            <div id="preview-qr" class="hidden mt-2 flex justify-center"><img src=""
-                                    class="h-16 w-16 object-contain rounded border border-slate-200"></div>
-                        </div>
-                    </div>
+
 
                     <!-- Moeda Padrão -->
                     <div class="mt-6">
@@ -141,11 +120,11 @@
                                 class="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-400 font-normal">Personalizável</span>
                         </label>
 
-                        <div class="flex gap-2 mb-4">
+                        <div class="flex flex-col sm:flex-row gap-2 mb-4">
                             <input type="text" id="nova-pagamento-nome" placeholder="Ex: Cartão 3x, Transferência..."
-                                class="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-sm">
+                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-sm">
                             <button onclick="adicionarFormaPagamento()"
-                                class="bg-slate-800 hover:bg-black text-white px-4 py-2.5 rounded-lg font-bold text-sm transition-colors flex items-center gap-2">
+                                class="w-full sm:w-auto bg-slate-800 hover:bg-black text-white px-4 py-2.5 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 whitespace-nowrap">
                                 <i class="ph-bold ph-plus"></i> Adicionar
                             </button>
                         </div>
@@ -157,7 +136,7 @@
                     </div>
                 </div>
 
-                <hr class="border-slate-100">
+                <hr class="border-slate-100 my-10">
 
                 <!-- Identidade Visual -->
                 <div>
