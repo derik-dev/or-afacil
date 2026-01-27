@@ -54,97 +54,100 @@
         <div class="bg-white w-full max-w-4xl p-8 rounded-xl shadow-xl shadow-slate-200/60 border border-slate-100">
             <form id="form-criar-completo" class="space-y-8">
                 <!-- Seção Cliente -->
-                <!-- Seção Cliente (Redesenhada) -->
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-sm font-bold text-slate-800 uppercase flex items-center gap-2">
-                            <i class="ph-bold ph-user text-blue-600"></i> Informações do Cliente
-                        </h3>
-                        <button type="button" onclick="toggleNovoCliente()"
-                            class="text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5">
-                            <i class="ph-bold ph-plus-circle"></i> <span id="btn-novo-cliente-text">Novo Cliente</span>
+                <!-- Seção Cliente (Redesenhada & Otimizada) -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-6">
+                    <div
+                        class="p-5 md:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <div class="flex-shrink-0 text-blue-600">
+                                <i class="ph-duotone ph-user text-2xl"></i>
+                            </div>
+                            <h3 class="text-sm font-bold text-slate-800 leading-tight uppercase tracking-wide">
+                                Informações do<br>Cliente
+                            </h3>
+                        </div>
+                        <button type="button" onclick="toggleNovoCliente()" id="btn-novo-cliente-text"
+                            class="w-full sm:w-auto bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 text-xs font-bold px-4 py-2 rounded-lg transition-all flex items-center justify-center gap-2 border border-blue-100">
+                            <i class="ph-bold ph-plus-circle text-lg"></i> Novo Cliente
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="p-5 md:p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Selecione o Cliente
-                                *</label>
+                            <label
+                                class="block text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Selecione
+                                o Cliente *</label>
                             <div class="relative group">
                                 <span
-                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-blue-500 transition-colors">
+                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-blue-500 transition-colors z-10">
                                     <i class="ph-bold ph-magnifying-glass text-lg"></i>
                                 </span>
                                 <select id="select-cliente"
-                                    class="w-full pl-11 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white appearance-none transition-all cursor-pointer text-sm font-bold text-slate-700 hover:border-blue-300">
-                                    <option value="">Buscar cliente...</option>
+                                    class="w-full pl-12 pr-10 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 appearance-none transition-all cursor-pointer text-sm font-medium text-slate-700 hover:border-blue-300">
+                                    <option value="">Selecione um cliente...</option>
                                 </select>
                                 <i
                                     class="ph-bold ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
                             </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Data de
-                                Validade</label>
+                            <label class="block text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Data
+                                de Validade</label>
                             <div class="relative group">
                                 <span
-                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-blue-500 transition-colors">
+                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-blue-500 transition-colors z-10">
                                     <i class="ph-bold ph-calendar-blank text-lg"></i>
                                 </span>
                                 <input type="date" id="input-validade"
-                                    class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all text-sm font-medium text-slate-600 cursor-pointer">
+                                    class="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm font-medium text-slate-600 cursor-pointer hover:border-blue-300">
                             </div>
                         </div>
                     </div>
 
                     <!-- Formulário Inline Novo Cliente (Estilizado) -->
                     <div id="form-novo-cliente"
-                        class="hidden mt-6 p-5 bg-blue-50/50 border border-blue-100 rounded-xl animate-fade-in-down">
-                        <div class="flex justify-between items-center mb-4 border-b border-blue-100 pb-2">
+                        class="hidden border-t border-slate-100 bg-blue-50/30 p-5 md:p-6 animate-fade-in-down">
+                        <div class="flex justify-between items-center mb-5">
                             <p class="text-xs font-bold text-blue-800 uppercase flex items-center gap-2">
-                                <i class="ph-fill ph-user-plus"></i> Cadastro Rápido
+                                <span class="bg-blue-100 text-blue-600 p-1 rounded"><i
+                                        class="ph-fill ph-user-plus"></i></span> Cadastro Rápido
                             </p>
                             <button type="button" onclick="toggleNovoCliente()"
-                                class="text-slate-400 hover:text-red-500 transition-colors"><i
-                                    class="ph-bold ph-x"></i></button>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input type="text" id="novo-cli-nome" placeholder="Nome Completo *"
-                                class="col-span-1 md:col-span-2 px-4 py-2.5 text-sm bg-white border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 shadow-sm">
-
-                            <input type="tel" id="novo-cli-phone" placeholder="Telemóvel"
-                                class="px-4 py-2.5 text-sm bg-white border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 shadow-sm">
-
-                            <input type="email" id="novo-cli-email" placeholder="E-mail"
-                                class="px-4 py-2.5 text-sm bg-white border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 shadow-sm">
-
-                            <input type="text" id="novo-cli-cpf" placeholder="NIF (Opcional)"
-                                class="px-4 py-2.5 text-sm bg-white border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 shadow-sm">
-
-                            <input type="text" id="novo-cli-empresa" placeholder="Empresa / Loja"
-                                class="px-4 py-2.5 text-sm bg-white border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 shadow-sm">
-
-                            <input type="text" id="novo-cli-endereco" placeholder="Morada Completa"
-                                class="col-span-1 md:col-span-2 px-4 py-2.5 text-sm bg-white border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 shadow-sm">
-                        </div>
-
-                        <div class="flex gap-3 pt-4">
-                            <button type="button" onclick="salvarClienteRapido()"
-                                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 px-4 rounded-lg transition-all shadow-md shadow-blue-500/20 flex items-center justify-center gap-2">
-                                <i class="ph-bold ph-check"></i> Salvar Cliente
+                                class="text-slate-400 hover:text-red-500 transition-colors p-1 hover:bg-red-50 rounded-lg">
+                                <i class="ph-bold ph-x text-lg"></i>
                             </button>
                         </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <input type="text" id="novo-cli-nome" placeholder="Nome Completo *"
+                                class="col-span-1 md:col-span-2 px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
+                            <input type="tel" id="novo-cli-phone" placeholder="Telemóvel"
+                                class="px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
+                            <input type="email" id="novo-cli-email" placeholder="E-mail"
+                                class="px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
+                            <input type="text" id="novo-cli-cpf" placeholder="NIF (Opcional)"
+                                class="px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
+                            <input type="text" id="novo-cli-empresa" placeholder="Empresa / Loja"
+                                class="px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
+                            <input type="text" id="novo-cli-endereco" placeholder="Morada Completa"
+                                class="col-span-1 md:col-span-2 px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
+                        </div>
+
+                        <button type="button" onclick="salvarClienteRapido()"
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-3 px-4 rounded-xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 transform active:scale-[0.98]">
+                            <i class="ph-bold ph-check"></i> Salvar Cliente
+                        </button>
                     </div>
                 </div>
 
                 <!-- Seção Itens -->
-                <!-- Seção Itens (Redesenhada) -->
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <div class="flex justify-between items-center mb-6">
+                <!-- Seção Itens (Redesenhada & Otimizada) -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div
+                        class="p-5 md:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100">
                         <div class="flex items-center gap-3">
                             <div
-                                class="w-10 h-10 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-600">
+                                class="w-10 h-10 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-600 flex-shrink-0">
                                 <i class="ph-duotone ph-cube text-2xl"></i>
                             </div>
                             <h3 class="text-sm font-bold text-slate-800 leading-tight">
@@ -152,246 +155,272 @@
                             </h3>
                         </div>
                         <button type="button" onclick="abrirModalItens()"
-                            class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-5 py-2.5 rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-slate-500/20 active:scale-95 group">
+                            class="w-full sm:w-auto bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-5 py-2.5 rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg shadow-slate-500/20 active:scale-95 group">
                             <i class="ph-bold ph-plus group-hover:rotate-90 transition-transform"></i> Adicionar Item
                         </button>
                     </div>
 
-                    <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm">
-                                <thead
-                                    class="bg-slate-50/80 text-slate-500 font-bold border-b border-slate-200 text-[11px] uppercase tracking-wider">
-                                    <tr>
-                                        <th class="p-4 pl-6">Descrição do Item</th>
-                                        <th class="p-4 w-24 text-center">Qtd</th>
-                                        <th class="p-4 w-32 text-right">Valor</th>
-                                        <th class="p-4 w-14 text-center"></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="lista-itens-orcamento" class="divide-y divide-slate-100 bg-white"></tbody>
-                            </table>
-                        </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm min-w-[300px]">
+                            <thead
+                                class="bg-slate-50/50 text-slate-500 font-bold border-b border-slate-100 text-[10px] uppercase tracking-wider">
+                                <tr>
+                                    <th class="p-3 pl-5">Descrição do Item</th>
+                                    <th class="p-3 w-20 text-center">Qtd</th>
+                                    <th class="p-3 w-28 text-right">Valor</th>
+                                    <th class="p-3 w-10 text-center"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-itens-orcamento" class="divide-y divide-slate-50 bg-white"></tbody>
+                        </table>
+                    </div>
 
-                        <!-- Empty State -->
-                        <div id="empty-itens" class="p-12 text-center text-slate-300 flex flex-col items-center">
-                            <i class="ph-duotone ph-package text-4xl mb-3 opacity-40"></i>
-                            <span class="text-sm font-medium text-slate-500">Sua lista está vazia</span>
-                        </div>
+                    <!-- Empty State -->
+                    <div id="empty-itens" class="p-10 text-center text-slate-300 flex flex-col items-center">
+                        <i class="ph-duotone ph-package text-4xl mb-3 opacity-40"></i>
+                        <span class="text-sm font-medium text-slate-500">Sua lista está vazia</span>
+                    </div>
 
-                        <!-- Resumo de Totais -->
-                        <div class="p-6 bg-slate-50 border-t border-slate-200 space-y-3">
-                            <div class="flex justify-between items-center text-xs font-medium text-slate-500">
-                                <span class="pl-2">Subtotal Produtos</span>
-                                <span class="pr-4" id="subtotal-produtos">--</span>
+                    <!-- Resumo de Totais -->
+                    <div class="p-5 md:p-6 bg-slate-50/50 space-y-2 border-t border-slate-100">
+                        <div class="flex justify-between items-center text-xs font-medium text-slate-500">
+                            <span class="pl-1">Subtotal Produtos</span>
+                            <span class="pr-1" id="subtotal-produtos">--</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs font-medium text-slate-500">
+                            <span class="pl-1">Mão de Obra</span>
+                            <span class="pr-1" id="subtotal-mao-obra">--</span>
+                        </div>
+                        <div
+                            class="flex justify-between items-center text-xs font-medium text-slate-500 pb-3 border-b border-slate-200">
+                            <span class="pl-1">Frete / Entregas</span>
+                            <span class="pr-1" id="subtotal-frete">--</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-2">
+                            <div class="flex flex-col pl-1">
+                                <span
+                                    class="text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-none">TOTAL</span>
+                                <span
+                                    class="text-xs font-bold text-slate-800 uppercase tracking-wider leading-none mt-0.5">CALCULADO</span>
                             </div>
-                            <div class="flex justify-between items-center text-xs font-medium text-slate-500">
-                                <span class="pl-2">Mão de Obra</span>
-                                <span class="pr-4" id="subtotal-mao-obra">--</span>
-                            </div>
-                            <div
-                                class="flex justify-between items-center text-xs font-medium text-slate-500 pb-3 border-b border-slate-200">
-                                <span class="pl-2">Frete / Entregas</span>
-                                <span class="pr-4" id="subtotal-frete">--</span>
-                            </div>
-                            <div class="flex justify-between items-center pt-2">
-                                <div class="flex flex-col pl-2">
-                                    <span
-                                        class="text-[10px] font-bold text-slate-500 uppercase tracking-wider leading-none">TOTAL</span>
-                                    <span
-                                        class="text-xs font-bold text-slate-800 uppercase tracking-wider leading-none mt-0.5">CALCULADO</span>
-                                </div>
-                                <span class="text-xl font-bold text-blue-600 pr-4" id="subtotal-display">--</span>
-                            </div>
+                            <span class="text-2xl font-bold text-blue-600 pr-1 tracking-tight"
+                                id="subtotal-display">--</span>
                         </div>
                     </div>
-                    <textarea id="input-descricao" class="hidden"></textarea>
-                    <input type="hidden" id="input-mao-obra-total" value="0">
-                    <input type="hidden" id="input-itens-json">
                 </div>
+                <textarea id="input-descricao" class="hidden"></textarea>
+                <input type="hidden" id="input-mao-obra-total" value="0">
+                <input type="hidden" id="input-itens-json">
+        </div>
 
-                <!-- Seção Pagamento e Valores Redesenhada -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+        <!-- Seção Pagamento e Valores Redesenhada -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
 
-                    <!-- Coluna 1: Valor e Detalhes -->
-                    <div class="space-y-6">
+            <!-- Coluna 1: Valor e Detalhes -->
+            <div class="space-y-6">
 
-                        <!-- Box de Valor Principal -->
-                        <div class="bg-blue-50 p-5 rounded-xl border border-blue-100 shadow-sm">
-                            <label class="block text-xs font-bold text-blue-900 mb-3 uppercase flex items-center gap-1">
-                                <i class="ph-bold ph-currency-dollar"></i> Valor Total do Orçamento
-                            </label>
+                <!-- Box de Valor Principal -->
+                <div class="bg-blue-50 p-5 rounded-xl border border-blue-100 shadow-sm">
+                    <label class="block text-xs font-bold text-blue-900 mb-3 uppercase flex items-center gap-1">
+                        <i class="ph-bold ph-currency-dollar"></i> Valor Total do Orçamento
+                    </label>
 
-                            <div class="flex gap-3">
-                                <!-- Seletor de Moeda -->
-                                <div class="w-1/3 min-w-[110px] relative">
-                                    <select id="select-moeda" onchange="onMoedaChange()"
-                                        class="w-full pl-3 pr-8 py-3.5 bg-white border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 appearance-none transition-all cursor-pointer text-sm font-bold text-blue-900 shadow-sm hover:border-blue-300">
-                                        <option value="EUR" selected>🇪🇺 Euro</option>
-                                        <option value="BRL">🇧🇷 Real</option>
-                                        <option value="USD">🇺🇸 Dólar</option>
-                                    </select>
-                                    <i
-                                        class="ph-bold ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-blue-400 pointer-events-none"></i>
-                                </div>
-
-                                <!-- Input de Valor -->
-                                <div class="flex-1 relative">
-                                    <span id="currency-symbol"
-                                        class="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600 font-bold text-lg select-none">€</span>
-                                    <input type="text" inputmode="decimal" id="input-valor" placeholder="0,00"
-                                        class="w-full pl-12 pr-4 py-3.5 bg-white border border-blue-200 rounded-lg text-blue-700 font-bold text-xl focus:outline-none focus:border-blue-500 ring-4 ring-blue-500/5 transition-all shadow-sm">
-                                </div>
-                            </div>
+                    <div class="flex gap-3">
+                        <!-- Seletor de Moeda -->
+                        <div class="w-1/3 min-w-[110px] relative">
+                            <select id="select-moeda" onchange="onMoedaChange()"
+                                class="w-full pl-3 pr-8 py-3.5 bg-white border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 appearance-none transition-all cursor-pointer text-sm font-bold text-blue-900 shadow-sm hover:border-blue-300">
+                                <option value="EUR" selected>🇪🇺 Euro</option>
+                                <option value="BRL">🇧🇷 Real</option>
+                                <option value="USD">🇺🇸 Dólar</option>
+                            </select>
+                            <i
+                                class="ph-bold ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-blue-400 pointer-events-none"></i>
                         </div>
 
-                        <!-- Prazo -->
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase">Prazo de Entrega
-                                (Dias)</label>
-                            <div class="relative">
-                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                                    <i class="ph-bold ph-calendar-check text-lg"></i>
-                                </span>
-                                <input type="number" id="input-prazo" placeholder="Ex: 15"
-                                    class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all font-medium">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Coluna 2: Configuração de Pagamento -->
-                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 h-fit">
-                        <h3 class="text-sm font-bold text-slate-800 uppercase mb-4 flex items-center gap-2">
-                            <i class="ph-bold ph-wallet text-slate-500"></i> Dados de Pagamento
-                        </h3>
-
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">Método
-                                    Preferencial</label>
-                                <div class="relative">
-                                    <select id="select-pagamento" onchange="togglePixFields()"
-                                        class="w-full pl-4 pr-10 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 appearance-none transition-all cursor-pointer text-sm font-medium shadow-sm hover:border-blue-300 text-slate-700">
-                                        <option value="boleto">Boleto Bancário</option>
-                                        <option value="credito">Cartão de Crédito</option>
-                                        <option value="debito">Cartão de Débito</option>
-                                        <option value="pix">PIX / Transferência</option>
-                                        <option value="dinheiro">Dinheiro / À Vista</option>
-                                    </select>
-                                    <i
-                                        class="ph-bold ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
-                                </div>
-                            </div>
-
-                            <div id="pix-fields"
-                                class="hidden animate-fade-in-down pt-2 border-t border-slate-200 mt-2">
-                                <div class="mb-3">
-                                    <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">Chave PIX
-                                        / IBAN</label>
-                                    <input type="text" id="input-chave-pix" placeholder="Digite a chave ou IBAN..."
-                                        class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-all">
-                                </div>
-                                <div id="pix-qr-preview-container"
-                                    class="hidden flex items-center gap-3 p-3 bg-indigo-50 rounded-lg border border-indigo-100">
-                                    <img id="pix-qr-preview-img" src=""
-                                        class="w-12 h-12 object-contain bg-white rounded border border-slate-200 p-0.5">
-                                    <div class="flex-1">
-                                        <p class="text-xs font-bold text-indigo-900">QR Code Vinculado</p>
-                                        <p class="text-[10px] text-indigo-600 leading-tight">Este código será impresso
-                                            no orçamento.</p>
-                                    </div>
-                                    <i class="ph-fill ph-check-circle text-indigo-400 text-xl"></i>
-                                </div>
-                            </div>
+                        <!-- Input de Valor -->
+                        <div class="flex-1 relative">
+                            <span id="currency-symbol"
+                                class="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600 font-bold text-lg select-none">€</span>
+                            <input type="text" inputmode="decimal" id="input-valor" placeholder="0,00"
+                                class="w-full pl-12 pr-4 py-3.5 bg-white border border-blue-200 rounded-lg text-blue-700 font-bold text-xl focus:outline-none focus:border-blue-500 ring-4 ring-blue-500/5 transition-all shadow-sm">
                         </div>
                     </div>
                 </div>
 
-                <div class="pt-8 flex gap-4 border-t border-slate-100">
-                    <button type="button" onclick="history.back()"
-                        class="px-6 py-3.5 bg-white border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-all">Cancelar</button>
-                    <button type="button" onclick="salvarOrcamentoCompleto()"
-                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-500/20 active:scale-[0.99] transition-all flex justify-center items-center gap-2"><i
-                            class="ph-bold ph-floppy-disk text-lg"></i> Salvar e Gerar</button>
+                <!-- Prazo -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase">Prazo de Entrega
+                        (Dias)</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                            <i class="ph-bold ph-calendar-check text-lg"></i>
+                        </span>
+                        <input type="number" id="input-prazo" placeholder="Ex: 15"
+                            class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all font-medium">
+                    </div>
                 </div>
-            </form>
+            </div>
+
+            <!-- Coluna 2: Configuração de Pagamento -->
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 h-fit">
+                <h3 class="text-sm font-bold text-slate-800 uppercase mb-4 flex items-center gap-2">
+                    <i class="ph-bold ph-wallet text-slate-500"></i> Dados de Pagamento
+                </h3>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">Método
+                            Preferencial</label>
+                        <div class="relative">
+                            <select id="select-pagamento" onchange="togglePixFields()"
+                                class="w-full pl-4 pr-10 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 appearance-none transition-all cursor-pointer text-sm font-medium shadow-sm hover:border-blue-300 text-slate-700">
+                                <option value="boleto">Boleto Bancário</option>
+                                <option value="credito">Cartão de Crédito</option>
+                                <option value="debito">Cartão de Débito</option>
+                                <option value="pix">PIX / Transferência</option>
+                                <option value="dinheiro">Dinheiro / À Vista</option>
+                            </select>
+                            <i
+                                class="ph-bold ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                        </div>
+                    </div>
+
+                    <div id="pix-fields" class="hidden animate-fade-in-down pt-2 border-t border-slate-200 mt-2">
+                        <div class="mb-3">
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">Chave PIX
+                                / IBAN</label>
+                            <input type="text" id="input-chave-pix" placeholder="Digite a chave ou IBAN..."
+                                class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-all">
+                        </div>
+                        <div id="pix-qr-preview-container"
+                            class="hidden flex items-center gap-3 p-3 bg-indigo-50 rounded-lg border border-indigo-100">
+                            <img id="pix-qr-preview-img" src=""
+                                class="w-12 h-12 object-contain bg-white rounded border border-slate-200 p-0.5">
+                            <div class="flex-1">
+                                <p class="text-xs font-bold text-indigo-900">QR Code Vinculado</p>
+                                <p class="text-[10px] text-indigo-600 leading-tight">Este código será impresso
+                                    no orçamento.</p>
+                            </div>
+                            <i class="ph-fill ph-check-circle text-indigo-400 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pt-8 flex flex-col-reverse sm:flex-row gap-4 border-t border-slate-100">
+            <button type="button" onclick="history.back()"
+                class="w-full sm:w-auto px-8 py-3.5 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95 shadow-sm">
+                Cancelar
+            </button>
+            <button type="button" onclick="salvarOrcamentoCompleto()"
+                class="w-full sm:flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-blue-500/25 active:scale-[0.98] transition-all flex justify-center items-center gap-2.5">
+                <i class="ph-bold ph-floppy-disk text-xl"></i> <span>Salvar e Gerar</span>
+            </button>
+        </div>
+        </form>
         </div>
     </main>
 
-    <!-- Modal Seleção de Itens -->
+    <!-- Modal Seleção de Itens (Redesenhado) -->
     <div id="modal-selecao-item" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="fecharModalItens()">
         </div>
         <div
-            class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl p-6 flex flex-col max-h-[85vh] animate-scale-in">
-            <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-4">
-                <h3 class="font-bold text-lg text-slate-900">Adicionar Item</h3>
-                <button onclick="fecharModalItens()"
-                    class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-red-500 transition-colors"><i
-                        class="ph-bold ph-x text-lg"></i></button>
+            class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl flex flex-col max-h-[90vh] animate-scale-in overflow-hidden">
+
+            <!-- Header -->
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-white z-10">
+                <h3 class="font-bold text-lg text-slate-800">Adicionar Item</h3>
+                <button onclick="fecharModalItens()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="ph-bold ph-x text-lg"></i>
+                </button>
             </div>
-            <div class="mb-4">
-                <div class="relative">
-                    <i class="ph-bold ph-magnifying-glass absolute left-3 top-3 text-slate-400"></i>
+
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-slate-50/50">
+
+                <!-- Busca -->
+                <div class="relative mb-4">
+                    <i class="ph-bold ph-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-lg"></i>
                     <input type="text" id="busca-item-modal" onkeyup="filtrarItensModal()"
                         placeholder="Buscar produto ou serviço..."
-                        class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 text-sm transition-all mb-3">
+                        class="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 shadow-sm text-sm transition-all">
                 </div>
-                <div class="flex gap-4 text-xs font-bold justify-between items-center">
-                    <button type="button" onclick="toggleNovoItem()"
-                        class="text-blue-600 hover:underline flex items-center gap-1">
-                        <i class="ph-bold ph-plus-circle"></i> <span id="btn-novo-item-text">Cadastrar Novo Item</span>
+
+                <!-- Toggle Form Link -->
+                <div class="flex justify-between items-center mb-4 px-1">
+                    <button type="button" onclick="toggleNovoItem()" id="btn-novo-item-text"
+                        class="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors">
+                        <i class="ph-bold ph-plus-circle"></i> Cadastrar Novo Item
                     </button>
                     <button type="button" onclick="recarregarItensModal()"
-                        class="text-slate-500 hover:text-blue-600 flex items-center gap-1"><i
-                            class="ph-bold ph-arrows-clockwise"></i> Atualizar</button>
+                        class="text-xs font-bold text-slate-400 hover:text-slate-600 flex items-center gap-1 transition-colors">
+                        <i class="ph-bold ph-arrows-clockwise"></i> Atualizar
+                    </button>
                 </div>
 
-                <!-- Formulário Inline Novo Item -->
+                <!-- Form Cadastro Rápido (Estilo Green) -->
                 <div id="form-novo-item"
-                    class="hidden mt-3 p-4 bg-green-50 border border-green-200 rounded-lg space-y-3">
-                    <p class="text-xs font-bold text-green-800 uppercase">Cadastro Rápido de Item</p>
-                    <div class="grid grid-cols-2 gap-3">
-                        <input type="text" id="novo-item-nome" placeholder="Nome do item *"
-                            class="col-span-2 px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-green-500">
-                        <select id="novo-item-tipo" onchange="toggleNovoItemTipo()"
-                            class="px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-green-500">
-                            <option value="Serviço">Serviço</option>
-                            <option value="Produto">Produto</option>
-                        </select>
-                        <input type="text" inputmode="decimal" id="novo-item-preco" placeholder="Preço (R$) *"
-                            class="px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-green-500">
+                    class="hidden mb-6 bg-green-50/50 border border-green-100 rounded-xl p-5 animate-fade-in-down">
+                    <p class="text-[10px] font-bold text-green-700 uppercase tracking-wider mb-3">Cadastro Rápido de
+                        Item</p>
 
-                        <!-- Box Dinâmico -->
+                    <div class="space-y-3">
+                        <input type="text" id="novo-item-nome" placeholder="Nome do item *"
+                            class="w-full px-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400">
+
+                        <div class="flex gap-3">
+                            <div class="relative w-20 flex-shrink-0">
+                                <select id="novo-item-tipo" onchange="toggleNovoItemTipo()"
+                                    class="w-full h-full px-2 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 appearance-none text-center font-medium text-slate-600 cursor-pointer">
+                                    <option value="Serviço">Sv</option>
+                                    <option value="Produto">Pr</option>
+                                </select>
+                                <div
+                                    class="absolute inset-0 flex items-center justify-center pointer-events-none text-slate-400 hidden">
+                                    <i class="ph-bold ph-caret-down"></i>
+                                </div>
+                            </div>
+                            <div class="flex-1 relative">
+                                <input type="text" inputmode="decimal" id="novo-item-preco" placeholder="Preço (R$) *"
+                                    class="w-full px-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400">
+                            </div>
+                        </div>
+
+                        <!-- Campos Dinâmicos Compactos -->
                         <div id="novo-box-mao-obra" class="w-full">
                             <input type="text" inputmode="decimal" id="novo-item-mao-obra"
-                                placeholder="Mão de Obra (R$)"
-                                class="w-full px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-green-500">
+                                placeholder="Custo Mão de Obra (Opcional)"
+                                class="w-full px-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400">
                         </div>
                         <div id="novo-box-frete" class="w-full hidden">
-                            <input type="text" inputmode="decimal" id="novo-item-frete" placeholder="Frete (R$)"
-                                class="w-full px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-green-500">
+                            <input type="text" inputmode="decimal" id="novo-item-frete"
+                                placeholder="Custo Frete (Opcional)"
+                                class="w-full px-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400">
                         </div>
 
-                        <input type="text" id="novo-item-descricao" placeholder="Descrição"
-                            class="col-span-2 px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-green-500">
+                        <input type="text" id="novo-item-descricao" placeholder="Descrição (Opcional)"
+                            class="w-full px-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400">
                     </div>
-                    <div class="flex gap-2 pt-2">
+
+                    <div class="flex gap-3 pt-4">
                         <button type="button" onclick="salvarItemRapido()"
-                            class="flex-1 bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 px-3 rounded-lg transition-colors flex items-center justify-center gap-1">
+                            class="flex-1 bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2.5 px-4 rounded-lg transition-all shadow-lg shadow-green-500/20 active:scale-[0.98] flex items-center justify-center gap-2">
                             <i class="ph-bold ph-check"></i> Salvar e Adicionar
                         </button>
                         <button type="button" onclick="toggleNovoItem()"
-                            class="px-3 py-2 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-50">
+                            class="px-4 py-2.5 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-50 transition-colors">
                             Cancelar
                         </button>
                     </div>
                 </div>
-            </div>
-            <div class="flex-1 overflow-y-auto custom-scrollbar pr-1">
-                <ul id="lista-itens-disponiveis" class="space-y-2">
-                    <li class="p-8 text-center text-slate-400 flex flex-col items-center"><i
-                            class="ph-bold ph-spinner animate-spin text-2xl mb-2"></i> Carregando catálogo...</li>
+
+                <!-- Lista de Itens -->
+                <ul id="lista-itens-disponiveis" class="space-y-3 pb-4">
+                    <li class="p-8 text-center text-slate-400 flex flex-col items-center">
+                        <i class="ph-bold ph-spinner animate-spin text-2xl mb-2"></i> Carregando catálogo...
+                    </li>
                 </ul>
             </div>
         </div>
@@ -495,8 +524,7 @@
 
             lista.forEach(item => {
                 const li = document.createElement('li');
-                li.className = 'group p-4 bg-slate-50 hover:bg-blue-50 border border-slate-100 rounded-xl cursor-pointer flex justify-between items-center transition-all';
-                li.onclick = () => selecionarItem(item);
+                li.className = 'group p-4 bg-white hover:bg-slate-50 border border-slate-100 rounded-xl cursor-pointer flex justify-between items-center transition-all shadow-sm hover:shadow-md hover:border-blue-200';
                 li.onclick = () => selecionarItem(item);
 
                 // Formatação robusta de moeda
@@ -504,17 +532,22 @@
                 if (typeof formatarMoeda === 'function') {
                     precoFormatado = formatarMoeda(item.preco, moedaSel);
                 } else {
-                    // Fallback local caso formatarMoeda não esteja disponível
-                    const config = {
-                        'BRL': { locale: 'pt-BR', currency: 'BRL' },
-                        'USD': { locale: 'en-US', currency: 'USD' },
-                        'EUR': { locale: 'de-DE', currency: 'EUR' }
-                    };
-                    const cfg = config[moedaSel] || config['BRL'];
-                    precoFormatado = parseFloat(item.preco).toLocaleString(cfg.locale, { style: 'currency', currency: cfg.currency });
+                    const cfg = { 'BRL': 'pt-BR', 'USD': 'en-US', 'EUR': 'de-DE' }[moedaSel] || 'pt-BR';
+                    const curr = { 'BRL': 'BRL', 'USD': 'USD', 'EUR': 'EUR' }[moedaSel] || 'BRL';
+                    precoFormatado = parseFloat(item.preco).toLocaleString(cfg, { style: 'currency', currency: curr });
                 }
 
-                li.innerHTML = `<div><p class="font-bold text-slate-800 group-hover:text-blue-700">${item.nome}</p><p class="text-xs text-slate-500 uppercase tracking-wider font-bold mt-0.5">${item.tipo || 'Item'}</p></div><div class="text-right"><p class="font-bold text-slate-900 text-sm">${precoFormatado}</p><span class="text-[10px] uppercase font-bold text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">Adicionar +</span></div>`;
+                li.innerHTML = `
+                    <div class="flex flex-col">
+                        <span class="font-bold text-slate-800 text-sm group-hover:text-blue-700 transition-colors">${item.nome}</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">${item.tipo || 'Item'}</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="block font-bold text-slate-900 text-sm">${precoFormatado}</span>
+                        <span class="text-[10px] text-blue-600 font-bold opacity-0 group-hover:opacity-100 transition-opacity flex justify-end items-center gap-1">
+                            Adicionar <i class="ph-bold ph-plus"></i>
+                        </span>
+                    </div>`;
                 ul.appendChild(li);
             });
         }
@@ -589,20 +622,20 @@
                     descricaoTexto += '\n';
 
                     tbody.innerHTML += `
-                    <tr class="group hover:bg-slate-50">
-                        <td class="p-3 pl-4">
+                    <tr class="group hover:bg-slate-50 border-b border-slate-50 last:border-0">
+                        <td class="p-3 pl-5">
                             <div class="font-bold text-slate-700 text-sm">${item.nome}</div>
-                            <div class="text-xs text-slate-400 truncate max-w-[150px]">${item.descricao || ''}</div>
+                            <div class="text-[10px] text-slate-400 truncate max-w-[120px] leading-tight">${item.descricao || ''}</div>
                         </td>
                         <td class="p-3 text-center">
                             <input type="number" min="1" value="${qtd}" onchange="atualizarQuantidade(${index}, this.value)" 
-                                class="w-16 p-1 text-center bg-white border border-slate-200 rounded text-sm font-bold focus:border-blue-500 focus:outline-none">
+                                class="w-12 p-1 text-center bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold focus:border-blue-500 focus:outline-none focus:bg-white transition-all">
                         </td>
-                        <td class="p-3 text-right font-bold text-slate-600 text-sm">
+                        <td class="p-3 text-right font-bold text-slate-700 text-sm">
                             ${formatarMoeda(valorTotalItem, moedaSel)}
                         </td>
                         <td class="p-3 text-center">
-                            <button type="button" onclick="removerItemOrcamento(${index})" class="text-slate-300 hover:text-red-500 p-1.5 rounded-full hover:bg-red-50 transition-colors">
+                            <button type="button" onclick="removerItemOrcamento(${index})" class="text-slate-300 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-50 transition-colors">
                                 <i class="ph-bold ph-trash"></i>
                             </button>
                         </td>
