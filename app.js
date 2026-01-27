@@ -589,9 +589,15 @@ async function atualizarKPIs() {
         return acc + (valor * cotacao);
     }, 0);
 
+    const moedaPreferida = localStorage.getItem('orcafacil_moeda') || 'EUR';
+    // Converte de volta para a moeda de visualização do usuário
+    // Se cotacao(BRL->EUR) = 0.15, então Valor(EUR) / 0.15 = Valor(BRL)
+    const taxaConversao = cotacoes[moedaPreferida] || 1;
+    const faturadoDisplay = faturado / taxaConversao;
+
     const taxa = orcamentos.length > 0 ? Math.round((aprovados.length / orcamentos.length) * 100) : 0;
     kpiTotal.innerText = orcamentos.length;
-    if (document.getElementById('kpi-faturado')) document.getElementById('kpi-faturado').innerText = formatarMoeda(faturado, 'EUR');
+    if (document.getElementById('kpi-faturado')) document.getElementById('kpi-faturado').innerText = formatarMoeda(faturadoDisplay, moedaPreferida);
     if (document.getElementById('kpi-aprovado')) document.getElementById('kpi-aprovado').innerText = aprovados.length;
     if (document.getElementById('kpi-pendente')) document.getElementById('kpi-pendente').innerText = orcamentos.length - aprovados.length;
     if (document.getElementById('kpi-clientes')) document.getElementById('kpi-clientes').innerText = clientes || 0;
