@@ -921,7 +921,9 @@ async function salvarConfiguracoesSupabase() {
     const cor_primaria = document.getElementById('conf-cor-primaria') ? document.getElementById('conf-cor-primaria').value : '#2563eb';
     const cor_secundaria = document.getElementById('conf-cor-secundaria') ? document.getElementById('conf-cor-secundaria').value : '#1e40af';
     const cor_texto = document.getElementById('conf-cor-texto') ? document.getElementById('conf-cor-texto').value : '#ffffff';
-    const moeda_padrao = 'EUR'; // Forçado Euro
+
+    // Força moeda EUR
+    const moeda_padrao = 'EUR';
 
     if (!nome) return alert("Por favor, informe pelo menos o Nome da Empresa.");
 
@@ -955,8 +957,9 @@ async function salvarConfiguracoesSupabase() {
 
     } catch (err) {
         alert("Erro ao salvar: " + err.message);
+        console.error(err);
     } finally {
-        if (btn) setBtnLoading(btn, false, '<i class="ph-bold ph-check"></i> Salvar');
+        if (btn) setBtnLoading(btn, false, '<i class="ph-bold ph-check"></i> Guardar');
     }
 }
 
