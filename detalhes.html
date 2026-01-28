@@ -48,9 +48,9 @@
         @media screen and (max-width: 768px) {
             #documento-pdf {
                 width: 130% !important;
-                /* Aumenta a largura base para caber o conteudo */
+                /* Aumenta a largura base para caber o conteúdo */
                 transform: scale(0.77);
-                /* Reduz a escala para caber na tela */
+                /* Reduz a escala para caber no ecrã */
                 transform-origin: top left;
                 margin-left: 0;
                 margin-bottom: -200px;
@@ -79,7 +79,7 @@
         </a>
         <div class="h-4 w-px bg-gray-300 hidden md:block"></div>
         <button onclick="baixarPDF()" class="flex items-center gap-2 text-black font-bold text-sm hover:underline">
-            <i class="ph-bold ph-download-simple"></i> Baixar PDF
+            <i class="ph-bold ph-download-simple"></i> Descarregar PDF
         </button>
     </div>
 
@@ -106,7 +106,7 @@
                     <h2 class="font-extrabold text-xl text-black mb-1 leading-none" id="empresa-nome">Sua Empresa</h2>
                     <div class="text-[10px] text-gray-600 space-y-0.5 font-medium">
                         <p class="flex items-center justify-start gap-1">
-                            <span id="empresa-end" class="text-left">Endereço Completo, 000 - Cidade/UF</span>
+                            <span id="empresa-end" class="text-left">Morada Completa, 000 - Cidade/Distrito</span>
                         </p>
                         <p class="flex items-center justify-start gap-1">
                             <span id="empresa-doc" class="font-semibold">NIF: 123456789</span> •
@@ -144,7 +144,7 @@
         <div class="px-8 py-6">
 
             <!-- CARDS DE INFORMAÇÃO -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div class="grid grid-cols-2 gap-8 mb-8 border-b border-gray-100 pb-8">
                 <!-- Cliente -->
                 <div class="">
                     <h3
@@ -169,7 +169,7 @@
                         <span class="font-bold text-gray-500 text-right">Telemóvel:</span>
                         <span id="cli-tel" class="text-gray-800">-</span>
 
-                        <span class="font-bold text-gray-500 text-right">Endereço:</span>
+                        <span class="font-bold text-gray-500 text-right">Morada:</span>
                         <span id="cli-endereco" class="text-gray-800 leading-tight">-</span>
                     </div>
                 </div>
@@ -227,7 +227,7 @@
                                 <td class="py-1 px-1" colspan="2">
                                     <div id="orc-descricao"
                                         class="bg-slate-50 rounded-xl p-3 text-black text-xs leading-relaxed border border-gray-100 flex justify-between items-start gap-4">
-                                        <div class="flex-1">Carregando itens...</div>
+                                        <div class="flex-1">A carregar itens...</div>
                                         <div class="font-mono font-medium">-</div>
                                     </div>
                                 </td>
@@ -238,10 +238,10 @@
                         <tfoot class="bg-white text-black mt-4 block md:table-footer-group border-t border-gray-200">
                             <tr>
                                 <td colspan="2" class="p-0 pt-6">
-                                    <div class="flex flex-col md:flex-row items-stretch justify-between gap-8">
+                                    <div class="flex flex-row items-end justify-between gap-[100px] md:gap-12">
 
                                         <!-- LADO ESQUERDO: PIX + ASSINATURA -->
-                                        <div class="w-full md:w-auto flex-grow max-w-sm flex flex-col gap-8">
+                                        <div class="flex-1 max-w-[50%] flex flex-col gap-8">
 
                                             <!-- Box PIX -->
                                             <div id="box-pix"
@@ -252,8 +252,8 @@
                                                         Pagamento via PIX</p>
                                                     <p class="font-mono text-sm font-bold text-slate-900 select-all mb-1 truncate"
                                                         id="orc-chave-pix">---</p>
-                                                    <p class="text-[9px] text-slate-400">Use seu app bancário para
-                                                        escanear ou copie a chave.</p>
+                                                    <p class="text-[9px] text-slate-400">Use a sua app bancária para
+                                                        digitalizar ou copie a chave.</p>
                                                 </div>
                                                 <div id="qr-code-pix-container"
                                                     class="hidden bg-white p-1 rounded border border-gray-100 shadow-sm flex-shrink-0">
@@ -272,7 +272,7 @@
                                         </div>
 
                                         <!-- LADO DIREITO: TOTAIS (Alinhamento Perfeito) -->
-                                        <div class="w-full md:w-64 flex-shrink-0">
+                                        <div class="w-[45%] md:w-64 flex-shrink-0 ml-auto text-right">
                                             <div class="space-y-2">
                                                 <div class="flex justify-between items-center text-xs text-gray-500">
                                                     <span>Subtotal</span>
@@ -442,6 +442,10 @@
                     
                     /* Limpa sombras e efeitos */
                     .shadow-2xl, .print-shadow { box-shadow: none !important; margin: 0 !important; }
+
+                    /* FORÇA ESPAÇAMENTO DE 200PX NO RODAPÉ DO PDF */
+                    tfoot .gap-\[100px\] { gap: 200px !important; }
+                    tfoot .md\:gap-12 { gap: 200px !important; }
                 `;
                 clone.appendChild(safeStyle);
 
@@ -461,11 +465,12 @@
                 document.body.appendChild(container);
 
                 const opt = {
-                    margin: 10, // Margens de 10mm (Total layout = 190 + 10 + 10 = 210mm)
+                    margin: [5, 10, 5, 10], // Top, Left, Bottom, Right (Reduzido verticalmente para evitar quebra)
                     filename: `Orcamento_${new Date().getTime()}.pdf`,
                     image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                    html2canvas: { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff', scrollY: 0 },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } // Tenta evitar quebras automáticas desnecessárias
                 };
 
                 html2pdf().set(opt).from(clone).save()

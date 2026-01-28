@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acesse sua conta - OrçaFácil</title>
+    <title>Aceda à sua conta - OrçaFácil</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
@@ -46,7 +46,7 @@
         <div>
             <h1 id="page-title" class="text-3xl md:text-4xl font-bold text-slate-900 mb-2 tracking-tight">Bem-vindo de
                 volta</h1>
-            <p id="page-subtitle" class="text-slate-500 mb-8">Insira seus dados para acessar sua conta.</p>
+            <p id="page-subtitle" class="text-slate-500 mb-8">Insira os seus dados para aceder à sua conta.</p>
 
             <!-- Toggle de Login/Cadastro -->
             <div class="bg-slate-100 p-1.5 rounded-xl flex mb-8 w-fit relative">
@@ -90,7 +90,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">Senha</label>
+                    <label
+                        class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">Palavra-passe</label>
                     <div class="relative">
                         <i class="ph-bold ph-lock-key absolute left-4 top-3.5 text-slate-400"></i>
                         <input type="password" id="input-password" required
@@ -164,7 +165,7 @@
                 setTimeout(() => fieldName.classList.add('hidden'), 300);
 
                 title.innerText = 'Bem-vindo de volta';
-                subtitle.innerText = 'Insira seus dados para acessar sua conta.';
+                subtitle.innerText = 'Insira os seus dados para aceder à sua conta.';
                 submitBtn.innerText = 'Entrar na Plataforma';
             } else {
                 toggleBg.style.transform = 'translateX(100%)';

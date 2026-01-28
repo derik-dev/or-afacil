@@ -1,8 +1,3 @@
-
-// ============================================================
-// ARQUIVO: app.js (Debugging Display Name)
-// ============================================================
-
 const PROJECT_URL = 'https://hjeqxocuuquosfapibxo.supabase.co';
 const PROJECT_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqZXF4b2N1dXF1b3NmYXBpYnhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4OTAyMjUsImV4cCI6MjA4MjQ2NjIyNX0.K4nIiH_N22CCVwBWfBkwfJtn65m96QS8iQSAO35iOFU';
 
@@ -24,6 +19,19 @@ function setBtnLoading(btn, isLoading, text = "Aguarde...") {
         btn.disabled = false;
         btn.classList.remove('opacity-70', 'cursor-not-allowed');
     }
+}
+
+const COTACOES_PADRAO = { 'BRL': 1.0, 'USD': 1.0, 'EUR': 1.0 }; // Forçado 1.0 para evitar conversões indesejadas pós-migração
+const MOEDA_PADRAO_FORCADA = 'EUR';
+
+function converterParaEuro(valor, moedaOrigem) {
+    if (!valor) return 0;
+    const m = moedaOrigem || 'BRL';
+    if (m === 'EUR') return parseFloat(valor);
+
+    const valorEmBRL = parseFloat(valor) * (COTACOES_PADRAO[m] || 1);
+    const valorEmEUR = valorEmBRL / COTACOES_PADRAO['EUR'];
+    return valorEmEUR;
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -59,7 +67,7 @@ async function processarAuth() {
     if (!email || !senha) return alert("Preencha todos os campos.");
     if (isCadastro && !nome) return alert("Preencha seu nome.");
 
-    setBtnLoading(btn, true, isCadastro ? "Criando Conta..." : "Entrando...");
+    setBtnLoading(btn, true, isCadastro ? "A criar conta..." : "A entrar...");
 
     try {
         if (isCadastro) {
@@ -156,8 +164,9 @@ async function carregarOrcamentosRecentes() {
             let statusColor = orc.status === 'Aprovado' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
             let icon = orc.status === 'Aprovado' ? 'ph-check-circle' : 'ph-clock'; // Fallback icon
 
-            // Mostra o valor na moeda original do orçamento
-            let displayValor = formatarMoeda(orc.valor, orc.moeda);
+            // Converte para Euro para exibição padronizada
+            let valorEuro = converterParaEuro(orc.valor, orc.moeda);
+            let displayValor = formatarMoeda(valorEuro);
 
             ul.innerHTML += `
             <li class="py-4 flex items-center justify-between hover:bg-slate-50 transition-colors rounded-lg px-2 -mx-2">
@@ -190,7 +199,7 @@ function novoCliente() {
     document.getElementById('cli-id').value = '';
     document.getElementById('modal-cliente-titulo').innerText = 'Novo Cliente';
     const btn = document.querySelector('button[onclick="salvarCliente()"]');
-    if (btn) btn.innerHTML = '<i class="ph-bold ph-check"></i> Salvar Cliente';
+    if (btn) btn.innerHTML = '<i class="ph-bold ph-check"></i> Guardar Cliente';
     toggleModal('modal-cliente', 'open');
 }
 
@@ -227,7 +236,7 @@ async function salvarCliente() {
 
     if (!nome) return alert("Nome obrigatório");
 
-    if (btn) setBtnLoading(btn, true, "Salvando...");
+    if (btn) setBtnLoading(btn, true, "A guardar...");
 
     try {
         const { data: { user } } = await sb.auth.getUser();
@@ -253,7 +262,7 @@ async function salvarCliente() {
     } catch (err) {
         alert(err.message);
     } finally {
-        if (btn) setBtnLoading(btn, false, id ? '<i class="ph-bold ph-floppy-disk"></i> Atualizar Cliente' : '<i class="ph-bold ph-check"></i> Salvar Cliente');
+        if (btn) setBtnLoading(btn, false, id ? '<i class="ph-bold ph-floppy-disk"></i> Atualizar Cliente' : '<i class="ph-bold ph-check"></i> Guardar Cliente');
     }
 }
 
@@ -285,14 +294,14 @@ async function carregarListaClientes() {
 }
 
 async function removerCliente(id) {
-    if (!confirm("Tem certeza que deseja excluir este cliente?")) return;
+    if (!confirm("Tem a certeza que deseja eliminar este cliente?")) return;
     try {
         const { error } = await sb.from('clientes').delete().eq('id', id);
         if (error) throw error;
         carregarListaClientes();
         if (document.getElementById('select-cliente')) carregarSelectClientes();
     } catch (err) {
-        alert("Erro ao excluir cliente. Verifique se ele não possui orçamentos vinculados.");
+        alert("Erro ao eliminar cliente. Verifique se ele não possui orçamentos vinculados.");
         console.error(err);
     }
 }
@@ -328,7 +337,7 @@ function novoItem() {
     document.getElementById('item-id').value = '';
     document.getElementById('modal-item-titulo').innerText = 'Novo Item';
     const btn = document.querySelector('button[onclick="salvarItem()"]');
-    if (btn) btn.innerHTML = '<i class="ph-bold ph-check"></i> Salvar Item';
+    if (btn) btn.innerHTML = '<i class="ph-bold ph-check"></i> Guardar Item';
     toggleModal('modal-item', 'open');
     toggleTipoItem(); // Reset UI state
 }
@@ -368,7 +377,7 @@ async function salvarItem() {
 
     if (!nome || !preco) return alert("Preencha campos Nome e Preço.");
 
-    if (btn) setBtnLoading(btn, true, "Salvando...");
+    if (btn) setBtnLoading(btn, true, "A guardar...");
 
     try {
         const { data: { user } } = await sb.auth.getUser();
@@ -404,7 +413,7 @@ async function salvarItem() {
         console.error(err);
         alert(err.message);
     } finally {
-        if (btn) setBtnLoading(btn, false, id ? '<i class="ph-bold ph-floppy-disk"></i> Atualizar Item' : '<i class="ph-bold ph-check"></i> Salvar Item');
+        if (btn) setBtnLoading(btn, false, id ? '<i class="ph-bold ph-floppy-disk"></i> Atualizar Item' : '<i class="ph-bold ph-check"></i> Guardar Item');
     }
 }
 
@@ -436,13 +445,13 @@ async function carregarCatalogo() {
 }
 
 async function removerItem(id) {
-    if (!confirm("Excluir item?")) return;
+    if (!confirm("Eliminar item?")) return;
     try {
         const { error } = await sb.from('itens').delete().eq('id', id);
         if (error) throw error;
         carregarCatalogo();
     } catch (e) {
-        alert("Erro ao excluir item. Pode estar em uso em algum orçamento.");
+        alert("Erro ao eliminar item. Pode estar em uso em algum orçamento.");
         console.error(e);
     }
 }
@@ -463,7 +472,7 @@ window.salvarOrcamentoCompleto = async function () {
     const prazo = document.getElementById('input-prazo') ? document.getElementById('input-prazo').value : '0';
     const pagamento = document.getElementById('select-pagamento') ? document.getElementById('select-pagamento').value : 'A vista';
     const pix = document.getElementById('input-chave-pix') ? document.getElementById('input-chave-pix').value : '';
-    const moeda = document.getElementById('select-moeda') ? document.getElementById('select-moeda').value : 'BRL';
+    const moeda = 'EUR';
 
     // Pega mão de obra total (campo oculto preenchido pela função atualizarTabelaItens)
     const maoObraEl = document.getElementById('input-mao-obra-total');
@@ -480,7 +489,7 @@ window.salvarOrcamentoCompleto = async function () {
 
     if (!cliente) return alert("Selecione um cliente.");
 
-    if (btn) setBtnLoading(btn, true, "Gerando Documento...");
+    if (btn) setBtnLoading(btn, true, "A Gerar Documento...");
 
     try {
         const { data: { user } } = await sb.auth.getUser();
@@ -502,7 +511,7 @@ window.salvarOrcamentoCompleto = async function () {
         window.location.href = `detalhes.html?id=${novoOrc[0].id}`;
     } catch (err) {
         alert(err.message);
-        if (btn) setBtnLoading(btn, false, 'Salvar');
+        if (btn) setBtnLoading(btn, false, 'Guardar');
     }
 }
 
@@ -519,8 +528,7 @@ async function carregarPaginaOrcamentos() {
         clientes.forEach(c => mapaEmails[c.nome] = c.email);
     }
 
-    // Cotações (mesmas do KPI)
-    const cotacoes = { 'BRL': 1, 'USD': 6.0, 'EUR': 6.5 };
+    // Cotações (mesmas do KPI) - REMOVIDO
 
     tbody.innerHTML = '';
     if (!lista) return;
@@ -530,10 +538,9 @@ async function carregarPaginaOrcamentos() {
 
         const email = mapaEmails[orc.cliente] || '--';
 
-        // Conversão e formatação na moeda padrão do usuário
-        // Conversão e formatação na moeda do orçamento (Mostra o valor original)
-        const moedaorc = orc.moeda || 'BRL';
-        let displayValor = `<span class="text-green-600">${formatarMoeda(orc.valor, moedaorc)}</span>`;
+        // Conversão e formatação na moeda padrão do usuário (EUR)
+        let valorEuro = converterParaEuro(orc.valor, orc.moeda);
+        let displayValor = `<span class="text-green-600">${formatarMoeda(valorEuro)}</span>`;
 
         tbody.innerHTML += `
         <tr class="hover:bg-slate-50/80 transition-colors group">
@@ -551,21 +558,14 @@ async function carregarPaginaOrcamentos() {
     });
 }
 
-function formatarMoeda(v, moedaParam = null) {
-    const moeda = moedaParam || localStorage.getItem('orcafacil_moeda') || 'EUR';
-    const config = {
-        'EUR': { locale: 'pt-PT', currency: 'EUR' },
-        'USD': { locale: 'en-US', currency: 'USD' },
-        'BRL': { locale: 'pt-BR', currency: 'BRL' }
-    };
-    const cfg = config[moeda] || config['EUR'];
-    return parseFloat(v).toLocaleString(cfg.locale, { style: 'currency', currency: cfg.currency });
+function formatarMoeda(v) {
+    return parseFloat(v).toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' });
 }
 function formatarData(d) { return d ? new Date(d).toLocaleDateString('pt-PT') : '--/--'; }
 function toggleModal(id, a) { const m = document.getElementById(id); if (m) { a === 'open' ? m.classList.remove('hidden') : m.classList.add('hidden'); } }
 
 async function aprovarOrcamento(id) { if (confirm("Aprovar?")) { await sb.from('orcamentos').update({ status: 'Aprovado' }).eq('id', id); if (document.getElementById('tabela-completa')) carregarPaginaOrcamentos(); else atualizarKPIs(); } }
-async function removerOrcamento(id) { if (confirm("Excluir?")) { await sb.from('orcamentos').delete().eq('id', id); if (document.getElementById('tabela-completa')) carregarPaginaOrcamentos(); else { carregarOrcamentosRecentes(); atualizarKPIs(); } } }
+async function removerOrcamento(id) { if (confirm("Eliminar?")) { await sb.from('orcamentos').delete().eq('id', id); if (document.getElementById('tabela-completa')) carregarPaginaOrcamentos(); else { carregarOrcamentosRecentes(); atualizarKPIs(); } } }
 async function atualizarKPIs() {
     const kpiTotal = document.getElementById('kpi-total');
     if (!kpiTotal) return;
@@ -575,29 +575,16 @@ async function atualizarKPIs() {
     const { count: itens } = await sb.from('itens').select('*', { count: 'exact', head: true });
     if (!orcamentos) return;
 
-    // Cotações aproximadas para conversão (pode ser atualizado)
-    // Cotações (Base Euro)
-    const cotacoes = { 'EUR': 1, 'USD': 0.92, 'BRL': 0.15 };
-
     const aprovados = orcamentos.filter(o => o.status === 'Aprovado');
 
-    // Converte todos os valores para VALOR PADRÃO (EUR) antes de somar
-    const faturado = aprovados.reduce((acc, c) => {
-        const valor = Number(c.valor) || 0;
-        const moeda = c.moeda || 'EUR';
-        const cotacao = cotacoes[moeda] || 1;
-        return acc + (valor * cotacao);
-    }, 0);
+    // Soma convertida para EUR
+    const faturado = aprovados.reduce((acc, c) => acc + (converterParaEuro(c.valor, c.moeda) || 0), 0);
 
-    const moedaPreferida = localStorage.getItem('orcafacil_moeda') || 'EUR';
-    // Converte de volta para a moeda de visualização do usuário
-    // Se cotacao(BRL->EUR) = 0.15, então Valor(EUR) / 0.15 = Valor(BRL)
-    const taxaConversao = cotacoes[moedaPreferida] || 1;
-    const faturadoDisplay = faturado / taxaConversao;
+    const faturadoDisplay = faturado;
 
     const taxa = orcamentos.length > 0 ? Math.round((aprovados.length / orcamentos.length) * 100) : 0;
     kpiTotal.innerText = orcamentos.length;
-    if (document.getElementById('kpi-faturado')) document.getElementById('kpi-faturado').innerText = formatarMoeda(faturadoDisplay, moedaPreferida);
+    if (document.getElementById('kpi-faturado')) document.getElementById('kpi-faturado').innerText = formatarMoeda(faturadoDisplay);
     if (document.getElementById('kpi-aprovado')) document.getElementById('kpi-aprovado').innerText = aprovados.length;
     if (document.getElementById('kpi-pendente')) document.getElementById('kpi-pendente').innerText = orcamentos.length - aprovados.length;
     if (document.getElementById('kpi-clientes')) document.getElementById('kpi-clientes').innerText = clientes || 0;
@@ -626,16 +613,15 @@ async function verificarPreenchimentoCadastro() {
 
         const { data: empresa } = await sb.from('empresas').select('*').eq('user_id', user.id).maybeSingle();
 
-        // Calcula preenchimento (5 campos: nome, doc, tel, endereco, pix)
+        // Calcula preenchimento (4 campos: nome, doc, tel, endereco) - PIX opcional
         let camposPreenchidos = 0;
-        const totalCampos = 5;
+        const totalCampos = 4;
 
         if (empresa) {
             if (empresa.nome) camposPreenchidos++;
             if (empresa.doc) camposPreenchidos++;
             if (empresa.tel) camposPreenchidos++;
             if (empresa.endereco) camposPreenchidos++;
-            if (empresa.pix) camposPreenchidos++;
         }
 
         const percentual = Math.round((camposPreenchidos / totalCampos) * 100);
@@ -682,7 +668,7 @@ async function carregarDetalhes() {
     // Popula dados do orçamento
     if (document.getElementById('orc-id')) document.getElementById('orc-id').innerText = `#${String(orc.id).padStart(4, '0')}`;
     if (document.getElementById('orc-data')) document.getElementById('orc-data').innerText = formatarData(orc.created_at);
-    if (document.getElementById('orc-valor')) document.getElementById('orc-valor').innerText = formatarMoeda(orc.valor, orc.moeda || 'BRL');
+    if (document.getElementById('orc-valor')) document.getElementById('orc-valor').innerText = formatarMoeda(orc.valor);
     if (document.getElementById('orc-pagamento')) {
         const pagamento = orc.pagamento || 'A combinar';
         const pagamentoFormatado = {
@@ -743,10 +729,10 @@ async function carregarDetalhes() {
                         <div class="flex flex-col flex-1">
                             <span class="text-[11px] font-bold text-black">${qtd}x ${item.nome}</span>
                             ${item.descricao ? `<span class="text-[9px] text-gray-600 mt-0.5 leading-tight">${item.descricao.replace(/\n/g, '<br>')}</span>` : ''}
-                            ${(subMO > 0 || subFrete > 0) ? `<span class="text-[9px] text-gray-400 mt-1 pt-1 border-t border-gray-200 inline-block w-full">${subMO > 0 ? `M.O: ${formatarMoeda(subMO, orc.moeda)}` : ''} ${subMO > 0 && subFrete > 0 ? '•' : ''} ${subFrete > 0 ? `Frete: ${formatarMoeda(subFrete, orc.moeda)}` : ''}</span>` : ''}
+                            ${(subMO > 0 || subFrete > 0) ? `<span class="text-[9px] text-gray-400 mt-1 pt-1 border-t border-gray-200 inline-block w-full">${subMO > 0 ? `M.O: ${formatarMoeda(subMO)}` : ''} ${subMO > 0 && subFrete > 0 ? '•' : ''} ${subFrete > 0 ? `Frete: ${formatarMoeda(subFrete)}` : ''}</span>` : ''}
                         </div>
                         <div class="text-right flex-shrink-0">
-                            <span class="text-[11px] font-mono text-black font-bold block">${formatarMoeda(valTotalItem, orc.moeda)}</span>
+                            <span class="text-[11px] font-mono text-black font-bold block">${formatarMoeda(valTotalItem)}</span>
                             <span class="text-[9px] text-gray-400 block mt-0.5">Total</span>
                         </div>
                     </div>
@@ -763,10 +749,9 @@ async function carregarDetalhes() {
     }
 
     // Atualiza subtotais
-    const moeda = orc.moeda || 'BRL';
-    if (document.getElementById('orc-subtotal-produtos')) document.getElementById('orc-subtotal-produtos').innerText = formatarMoeda(totalProd, moeda);
-    if (document.getElementById('orc-subtotal-mao-obra')) document.getElementById('orc-subtotal-mao-obra').innerText = formatarMoeda(totalMO, moeda);
-    if (document.getElementById('orc-subtotal-frete')) document.getElementById('orc-subtotal-frete').innerText = formatarMoeda(totalFrete, moeda);
+    if (document.getElementById('orc-subtotal-produtos')) document.getElementById('orc-subtotal-produtos').innerText = formatarMoeda(totalProd);
+    if (document.getElementById('orc-subtotal-mao-obra')) document.getElementById('orc-subtotal-mao-obra').innerText = formatarMoeda(totalMO);
+    if (document.getElementById('orc-subtotal-frete')) document.getElementById('orc-subtotal-frete').innerText = formatarMoeda(totalFrete);
 
     // Chave PIX será preenchida depois, junto com QR code
     if (document.getElementById('cli-nome')) document.getElementById('cli-nome').innerText = orc.cliente || 'Cliente';
@@ -897,11 +882,11 @@ async function carregarConfiguracoesSupabase() {
             if (document.getElementById('conf-cor-secundaria-hex')) document.getElementById('conf-cor-secundaria-hex').value = empresa.cor_secundaria;
         }
 
-        // Carrega Moeda Padrão
-        if (empresa.moeda_padrao) {
-            if (document.getElementById('conf-moeda-padrao')) document.getElementById('conf-moeda-padrao').value = empresa.moeda_padrao;
-            localStorage.setItem('orcafacil_moeda', empresa.moeda_padrao);
+        // Força Moeda Padrão para EUR
+        if (empresa.moeda_padrao !== 'EUR') {
+            console.log("Migrando moeda local para EUR...");
         }
+        localStorage.setItem('orcafacil_moeda', 'EUR');
 
         // Carrega Logo e QR Code
         if (empresa.logo) {
@@ -936,7 +921,7 @@ async function salvarConfiguracoesSupabase() {
     const cor_primaria = document.getElementById('conf-cor-primaria') ? document.getElementById('conf-cor-primaria').value : '#2563eb';
     const cor_secundaria = document.getElementById('conf-cor-secundaria') ? document.getElementById('conf-cor-secundaria').value : '#1e40af';
     const cor_texto = document.getElementById('conf-cor-texto') ? document.getElementById('conf-cor-texto').value : '#ffffff';
-    const moeda_padrao = document.getElementById('conf-moeda-padrao')?.value || 'BRL';
+    const moeda_padrao = 'EUR'; // Forçado Euro
 
     if (!nome) return alert("Por favor, informe pelo menos o Nome da Empresa.");
 
@@ -1387,144 +1372,117 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ===================================
-// FORMAS DE PAGAMENTO (Gerenciamento)
-// ===================================
 
-async function carregarConfiguracoesPagamento() {
-    const lista = document.getElementById('lista-formas-pagamento');
-    if (!lista) return;
-
-    try {
-        const { data: { user } } = await sb.auth.getUser();
-        if (!user) return;
-
-        // Tenta buscar formas de pagamento existentes
-        let { data: formas, error } = await sb.from('formas_pagamento').select('*').order('nome');
-
-        // Se der erro de tabela não existente, avisa
-        if (error) {
-            console.warn('Tabela formas_pagamento pode não existir.', error);
-            lista.innerHTML = '<li class="text-xs text-red-500 p-2 border border-red-50 bg-red-50 rounded">Erro: Tabela não encontrada.<br>Solicite o SQL de configuração.</li>';
-            return;
-        }
-
-        // Se vazio, insere padrões
-        if (!formas || formas.length === 0) {
-            console.log('Inserindo formas de pagamento padrão...');
-            const padroes = [
-                { user_id: user.id, nome: 'PIX', valor_ref: 'pix' },
-                { user_id: user.id, nome: 'Boleto Bancário', valor_ref: 'boleto' },
-                { user_id: user.id, nome: 'Cartão de Crédito', valor_ref: 'credito' },
-                { user_id: user.id, nome: 'Cartão de Débito', valor_ref: 'debito' },
-                { user_id: user.id, nome: 'Dinheiro / Espécie', valor_ref: 'dinheiro' }
-            ];
-
-            const { error: errInsert } = await sb.from('formas_pagamento').insert(padroes);
-            if (!errInsert) {
-                const { data: novos } = await sb.from('formas_pagamento').select('*').order('nome');
-                formas = novos;
-            }
-        }
-
-        renderizarListaPagamentos(formas);
-
-    } catch (e) {
-        console.error('Erro ao carregar pagamentos', e);
-    }
-}
-
-function renderizarListaPagamentos(formas) {
-    const lista = document.getElementById('lista-formas-pagamento');
-    if (!lista) return;
-    lista.innerHTML = '';
-
-    if (!formas || formas.length === 0) {
-        lista.innerHTML = '<li class="text-xs text-slate-400 text-center">Nenhuma forma cadastrada.</li>';
-        return;
-    }
-
-    formas.forEach(f => {
-        const li = document.createElement('li');
-        li.className = 'flex justify-between items-center p-3 bg-slate-50 border border-slate-100 rounded-lg group hover:border-blue-200 transition-colors';
-        li.innerHTML = `<span class="text-sm font-medium text-slate-700">${f.nome}</span><button onclick="removerFormaPagamento('${f.id}')" class="text-slate-400 hover:text-red-500 p-1 rounded hover:bg-red-50 transition-colors"><i class="ph-bold ph-trash"></i></button>`;
-        lista.appendChild(li);
-    });
-}
-
-async function adicionarFormaPagamento() {
-    const input = document.getElementById('nova-pagamento-nome');
-    const nome = input.value.trim();
-    if (!nome) return alert('Digite o nome.');
-
-    try {
-        const { data: { user } } = await sb.auth.getUser();
-        const valor_ref = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '_');
-
-        const { error } = await sb.from('formas_pagamento').insert([{
-            user_id: user.id,
-            nome: nome,
-            valor_ref: valor_ref
-        }]);
-
-        if (error) throw error;
-
-        input.value = '';
-        carregarConfiguracoesPagamento();
-
-    } catch (e) {
-        alert('Erro ao salvar: ' + e.message);
-    }
-}
-
-async function removerFormaPagamento(id) {
-    if (!confirm('Remover?')) return;
-    try {
-        const { error } = await sb.from('formas_pagamento').delete().eq('id', id);
-        if (error) throw error;
-        carregarConfiguracoesPagamento();
-    } catch (e) {
-        alert('Erro ao remover: ' + e.message);
-    }
-}
-
-async function carregarSelectPagamento() {
-    const sel = document.getElementById('select-pagamento');
-    if (!sel) return;
-
-    try {
-        const { data: formas, error } = await sb.from('formas_pagamento').select('*').order('nome');
-
-        if (error || !formas || formas.length === 0) return; // Mantem fallback HTML
-
-        sel.innerHTML = '';
-
-        const ordenados = formas.sort((a, b) => {
-            if (a.valor_ref === 'pix') return -1;
-            if (b.valor_ref === 'pix') return 1;
-            return a.nome.localeCompare(b.nome);
-        });
-
-        ordenados.forEach(f => {
-            const opt = document.createElement('option');
-            opt.value = f.nome;
-            opt.innerText = f.nome;
-            if ((f.valor_ref && f.valor_ref.includes('pix')) || f.nome.toLowerCase().includes('pix')) {
-                opt.setAttribute('data-tipo', 'pix');
-            }
-            sel.appendChild(opt);
-        });
-
-        // Verifica se existe a função togglePixFields antes de chamar
-        if (typeof togglePixFields === 'function') togglePixFields();
-
-    } catch (e) {
-        console.error('Erro select pagamentos', e);
-    }
-}
 
 // Inicializador
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('lista-formas-pagamento')) carregarConfiguracoesPagamento();
-    if (document.getElementById('select-pagamento')) carregarSelectPagamento();
+    // Inicialização condicional baseada na página
+    if (document.getElementById('select-cliente')) carregarSelectClientes();
+    if (document.getElementById('lista-clientes')) carregarListaClientes();
+    if (document.getElementById('tabela-catalogo')) carregarCatalogo();
+    if (document.getElementById('tabela-completa')) carregarPaginaOrcamentos();
+    if (document.getElementById('kpi-total')) atualizarKPIs();
+
+    // Auth check state change
+    sb.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_OUT') window.location.href = 'index.html';
+    });
 });
+
+async function carregarSelectClientes() {
+    const sel = document.getElementById('select-cliente');
+    if (!sel) return;
+
+    try {
+        const { data: clientes, error } = await sb.from('clientes').select('id, nome, empresa').order('nome');
+        if (error) throw error;
+
+        sel.innerHTML = '<option value="">Selecione um cliente...</option>';
+        if (clientes) {
+            clientes.forEach(cli => {
+                const opt = document.createElement('option');
+                opt.value = cli.nome; // Usando Nome como valor para o Orçamento (conforme lógica do projeto)
+                opt.innerText = cli.empresa ? `${cli.nome} (${cli.empresa})` : cli.nome;
+                opt.setAttribute('data-id', cli.id); // Guarda ID se precisar
+                sel.appendChild(opt);
+            });
+        }
+    } catch (e) {
+        console.error("Erro ao carregar select clientes:", e);
+    }
+}
+
+// ===================================
+// CLIENTE RÁPIDO (Orçamento)
+// ===================================
+
+function toggleNovoCliente() {
+    const form = document.getElementById('form-novo-cliente');
+    if (!form) return;
+    form.classList.toggle('hidden');
+
+    // Foca no nome se abriu
+    if (!form.classList.contains('hidden')) {
+        setTimeout(() => document.getElementById('novo-cli-nome')?.focus(), 100);
+    }
+}
+
+async function salvarClienteRapido() {
+    const nome = document.getElementById('novo-cli-nome').value.trim();
+    const tel = document.getElementById('novo-cli-phone').value.trim();
+    const email = document.getElementById('novo-cli-email').value.trim();
+    const documento = document.getElementById('novo-cli-cpf').value.trim();
+    const empresa = document.getElementById('novo-cli-empresa').value.trim();
+    const endereco = document.getElementById('novo-cli-endereco').value.trim();
+
+    if (!nome) return alert("Por favor, preencha o nome do cliente.");
+
+    try {
+        const { data: { user } } = await sb.auth.getUser();
+        if (!user) return alert("Sessão expirada. Faça login novamente.");
+
+        // Objeto cliente
+        const novoCliente = {
+            user_id: user.id,
+            nome: nome,
+            phone: tel,
+            email: email,
+            cpf: documento,
+            empresa: empresa,
+            endereco: endereco,
+            created_at: new Date().toISOString()
+        };
+
+        const { data, error } = await sb.from('clientes').insert([novoCliente]).select();
+
+        if (error) throw error;
+        if (!data || data.length === 0) throw new Error("Erro ao retornar ID do cliente.");
+
+        alert("Cliente registado com sucesso! ✅");
+
+        // Limpa campos
+        document.getElementById('novo-cli-nome').value = '';
+        document.getElementById('novo-cli-phone').value = '';
+        document.getElementById('novo-cli-email').value = '';
+        document.getElementById('novo-cli-cpf').value = '';
+        document.getElementById('novo-cli-empresa').value = '';
+        document.getElementById('novo-cli-endereco').value = '';
+
+        // Esconde formulário
+        toggleNovoCliente();
+
+        // Atualiza o select de clientes e seleciona o novo
+        if (typeof carregarSelectClientes === 'function') await carregarSelectClientes();
+
+        // Seleciona o recém criado
+        const select = document.getElementById('select-cliente');
+        if (select) {
+            select.value = data[0].nome; // Define o valor pelo NOME
+            select.dispatchEvent(new Event('change'));
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao guardar cliente: " + err.message);
+    }
+}

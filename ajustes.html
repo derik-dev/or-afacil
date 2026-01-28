@@ -56,7 +56,7 @@
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="md:col-span-2">
-                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Nome da Empresa / Seu
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Nome da Empresa / O Seu
                             Nome</label>
                         <input type="text" id="conf-nome"
                             class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white transition-all font-medium"
@@ -79,144 +79,93 @@
                         <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Morada Completa</label>
                         <input type="text" id="conf-end"
                             class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
-                            placeholder="Rua Exemplo, 123 - Centro, Cidade - UF">
+                            placeholder="Rua Exemplo, 123 - Centro, Cidade - Distrito">
                     </div>
                 </div>
             </div>
 
             <hr class="border-slate-100">
 
-            <!-- Financeiro -->
+
+
+            <!-- Identidade Visual -->
             <div>
                 <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                    <i class="ph-duotone ph-wallet text-blue-600"></i> Dados Financeiros Padrão
+                    <i class="ph-duotone ph-paint-brush text-blue-600"></i> Identidade Visual
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-
-                    <!-- Moeda Padrão -->
-                    <div class="mt-6">
-                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Moeda Padrão</label>
-                        <div class="relative">
-                            <select id="conf-moeda-padrao"
-                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white transition-all appearance-none cursor-pointer font-medium shadow-sm">
-                                <option value="EUR">🇪🇺 Euro (€)</option>
-                                <option value="BRL">🇧🇷 Real Brasileiro (R$)</option>
-                                <option value="USD">🇺🇸 Dólar Americano ($)</option>
-                            </select>
-                            <i
-                                class="ph-bold ph-caret-down absolute right-4 top-3.5 text-slate-400 pointer-events-none"></i>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Logo da
+                            Empresa</label>
+                        <input type="file" id="conf-logo-input" accept="image/*" class="hidden"
+                            onchange="converterImagemBase64(this, 'conf-logo')">
+                        <input type="hidden" id="conf-logo">
+                        <div onclick="document.getElementById('conf-logo-input').click()"
+                            class="w-full px-4 py-8 bg-slate-50 border border-dashed border-slate-300 rounded-lg cursor-pointer hover:bg-slate-100 transition-all flex flex-col items-center justify-center gap-2 text-slate-500 text-sm">
+                            <i class="ph-bold ph-image text-2xl"></i>
+                            <span id="btn-logo-text">Selecionar Logo</span>
+                            <span class="text-[10px] text-slate-400">Recomendado: Fundo Transparente</span>
                         </div>
-                        <p class="text-[10px] text-slate-400 mt-1">Esta será a moeda padrão ao criar novos orçamentos.
-                        </p>
+                    </div>
+                    <div class="flex items-center justify-center bg-slate-50 rounded-lg border border-slate-100 p-4">
+                        <div id="preview-logo-container" class="text-center">
+                            <p class="text-xs text-slate-400 mb-2">Pré-visualização</p>
+                            <img id="preview-logo" src="" class="h-20 object-contain mx-auto hidden">
+                            <span id="preview-logo-placeholder" class="text-sm font-bold text-slate-300">Sem
+                                Logo</span>
+                        </div>
                     </div>
 
-                    <!-- Gerenciar Formas de Pagamento -->
-                    <div class="mt-8 pt-6 border-t border-slate-100">
-                        <label
-                            class="block text-xs font-bold text-slate-500 mb-3 uppercase flex justify-between items-center">
-                            Formas de Pagamento Disponíveis
-                            <span
-                                class="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-400 font-normal">Personalizável</span>
-                        </label>
-
-                        <div class="flex flex-col sm:flex-row gap-2 mb-4">
-                            <input type="text" id="nova-pagamento-nome" placeholder="Ex: Cartão 3x, Transferência..."
-                                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-sm">
-                            <button onclick="adicionarFormaPagamento()"
-                                class="w-full sm:w-auto bg-slate-800 hover:bg-black text-white px-4 py-2.5 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 whitespace-nowrap">
-                                <i class="ph-bold ph-plus"></i> Adicionar
-                            </button>
-                        </div>
-
-                        <ul id="lista-formas-pagamento"
-                            class="space-y-2 max-h-60 overflow-y-auto pr-1 custom-scrollbar">
-                            <li class="text-xs text-slate-400 text-center py-4">Carregando formas de pagamento...</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <hr class="border-slate-100 my-10">
-
-                <!-- Identidade Visual -->
-                <div>
-                    <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                        <i class="ph-duotone ph-paint-brush text-blue-600"></i> Identidade Visual
-                    </h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Logo da
-                                Empresa</label>
-                            <input type="file" id="conf-logo-input" accept="image/*" class="hidden"
-                                onchange="converterImagemBase64(this, 'conf-logo')">
-                            <input type="hidden" id="conf-logo">
-                            <div onclick="document.getElementById('conf-logo-input').click()"
-                                class="w-full px-4 py-8 bg-slate-50 border border-dashed border-slate-300 rounded-lg cursor-pointer hover:bg-slate-100 transition-all flex flex-col items-center justify-center gap-2 text-slate-500 text-sm">
-                                <i class="ph-bold ph-image text-2xl"></i>
-                                <span id="btn-logo-text">Selecionar Logo</span>
-                                <span class="text-[10px] text-slate-400">Recomendado: Fundo Transparente</span>
-                            </div>
-                        </div>
+                    <!-- Cor Primária para PDF -->
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Cores do Orçamento
+                            (PDF)</label>
                         <div
-                            class="flex items-center justify-center bg-slate-50 rounded-lg border border-slate-100 p-4">
-                            <div id="preview-logo-container" class="text-center">
-                                <p class="text-xs text-slate-400 mb-2">Pré-visualização</p>
-                                <img id="preview-logo" src="" class="h-20 object-contain mx-auto hidden">
-                                <span id="preview-logo-placeholder" class="text-sm font-bold text-slate-300">Sem
-                                    Logo</span>
-                            </div>
-                        </div>
-
-                        <!-- Cor Primária para PDF -->
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Cores do Orçamento
-                                (PDF)</label>
-                            <div
-                                class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Cor de
-                                        Fundo (Cabeçalho)</label>
-                                    <div class="flex items-center gap-3">
-                                        <input type="color" id="conf-cor-primaria" value="#2563eb"
-                                            class="w-10 h-10 rounded border border-slate-200 cursor-pointer shadow-sm">
-                                        <div class="flex-1">
-                                            <p class="text-xs text-slate-600 font-medium">Cor da Marca</p>
-                                            <p class="text-[10px] text-slate-400">Define o fundo do cabeçalho da tabela.
-                                            </p>
-                                        </div>
+                            class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Cor de
+                                    Fundo (Cabeçalho)</label>
+                                <div class="flex items-center gap-3">
+                                    <input type="color" id="conf-cor-primaria" value="#2563eb"
+                                        class="w-10 h-10 rounded border border-slate-200 cursor-pointer shadow-sm">
+                                    <div class="flex-1">
+                                        <p class="text-xs text-slate-600 font-medium">Cor da Marca</p>
+                                        <p class="text-[10px] text-slate-400">Define o fundo do cabeçalho da tabela.
+                                        </p>
                                     </div>
                                 </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Cor do
-                                        Texto (Título)</label>
-                                    <div class="flex items-center gap-3">
-                                        <input type="color" id="conf-cor-texto" value="#ffffff"
-                                            class="w-10 h-10 rounded border border-slate-200 cursor-pointer shadow-sm">
-                                        <div class="flex-1">
-                                            <p class="text-xs text-slate-600 font-medium">Cor da Fonte</p>
-                                            <p class="text-[10px] text-slate-400">Define a cor de "Descrição" e "Total".
-                                            </p>
-                                        </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Cor do
+                                    Texto (Título)</label>
+                                <div class="flex items-center gap-3">
+                                    <input type="color" id="conf-cor-texto" value="#ffffff"
+                                        class="w-10 h-10 rounded border border-slate-200 cursor-pointer shadow-sm">
+                                    <div class="flex-1">
+                                        <p class="text-xs text-slate-600 font-medium">Cor da Fonte</p>
+                                        <p class="text-[10px] text-slate-400">Define a cor de "Descrição" e "Total".
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <hr class="border-slate-100">
-
-                <div class="flex justify-between items-center pt-4">
-                    <button onclick="salvarConfiguracoesSupabase()"
-                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-blue-500/20">
-                        <i class="ph-bold ph-check"></i> Salvar
-                    </button>
-                    <button onclick="sair()"
-                        class="text-red-500 font-bold text-sm hover:underline flex items-center gap-2"><i
-                            class="ph-bold ph-sign-out"></i> Sair da Conta</button>
-                </div>
-
             </div>
+
+            <hr class="border-slate-100">
+
+            <div class="flex justify-between items-center pt-4">
+                <button onclick="salvarConfiguracoesSupabase()"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-blue-500/20">
+                    <i class="ph-bold ph-check"></i> Guardar
+                </button>
+                <button onclick="sair()"
+                    class="text-red-500 font-bold text-sm hover:underline flex items-center gap-2"><i
+                        class="ph-bold ph-sign-out"></i> Sair da Conta</button>
+            </div>
+
+        </div>
     </main>
 
     <!-- Navegação Inferior Premium -->
