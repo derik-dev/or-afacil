@@ -494,6 +494,43 @@
                     });
             }, 800);
         }
+
+        function enviarWhatsApp() {
+            // Pega o telefone do cliente do elemento na página
+            const telElement = document.getElementById('cli-tel');
+            if (!telElement) {
+                return alert("Número de telefone do cliente não encontrado.");
+            }
+
+            let telefone = telElement.innerText.trim();
+
+            // Remove formatação (espaços, hífens, parênteses)
+            telefone = telefone.replace(/\D/g, '');
+
+            // Se não tiver código de país, adiciona +351 (Portugal)
+            if (!telefone.startsWith('351') && telefone.length === 9) {
+                telefone = '351' + telefone;
+            }
+
+            if (telefone.length < 9) {
+                return alert("Número de telefone inválido.");
+            }
+
+            // Pega informações do orçamento para a mensagem
+            const orcId = document.getElementById('orc-id')?.innerText || '#0000';
+            const clienteNome = document.getElementById('cli-nome')?.innerText || 'Cliente';
+            const valor = document.getElementById('orc-valor')?.innerText || 'R$ 0,00';
+
+            // Mensagem personalizada
+            const mensagem = `Olá ${clienteNome}! 👋\n\nSegue o orçamento ${orcId} no valor de ${valor}.\n\nQualquer dúvida, estou à disposição!`;
+
+            // Codifica a mensagem para URL
+            const mensagemCodificada = encodeURIComponent(mensagem);
+
+            // Abre WhatsApp em nova aba
+            const url = `https://wa.me/${telefone}?text=${mensagemCodificada}`;
+            window.open(url, '_blank');
+        }
     </script>
 </body>
 

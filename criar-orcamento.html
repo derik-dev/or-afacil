@@ -177,9 +177,9 @@
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                            <div class="grid grid-cols-12 gap-3 items-end">
                                 <!-- Linha 1: Tipo e Nome -->
-                                <div class="col-span-1 md:col-span-3">
+                                <div class="col-span-12 md:col-span-3">
                                     <label
                                         class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Tipo</label>
                                     <div class="relative">
@@ -192,19 +192,20 @@
                                             class="ph-bold ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
                                     </div>
                                 </div>
-                                <div class="col-span-1 md:col-span-9">
+                                <div class="col-span-12 md:col-span-9">
                                     <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Nome
                                         do Item</label>
                                     <input type="text" id="inline-nome" placeholder="Ex: Instalação Elétrica"
                                         class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 font-bold text-slate-700 text-sm">
                                 </div>
 
-                                <!-- Linha 2: Valores e Botão -->
-                                <div class="col-span-6 md:col-span-2">
+                                <!-- Linha 2: Descrição e Valores -->
+                                <div class="col-span-12 md:col-span-12">
                                     <label
-                                        class="block text-[10px] font-bold text-slate-400 mb-1 uppercase text-center">Qtd</label>
-                                    <input type="number" id="inline-qtd" value="1" min="1"
-                                        class="w-full px-1 py-2.5 text-center bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 font-bold text-slate-700 text-sm">
+                                        class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Descrição</label>
+                                    <textarea id="inline-descricao" rows="2"
+                                        placeholder="Descreva os detalhes do serviço ou produto..."
+                                        class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-slate-700 text-sm resize-none"></textarea>
                                 </div>
 
                                 <div class="col-span-6 md:col-span-3">
@@ -246,9 +247,8 @@
                             <thead
                                 class="bg-slate-50/50 text-slate-500 font-bold border-b border-slate-100 text-[10px] uppercase tracking-wider">
                                 <tr>
-                                    <th class="p-3 pl-5">Nome do Item</th>
-                                    <th class="p-3 w-20 text-center">Qtd</th>
-                                    <th class="p-3 w-28 text-right">Valor</th>
+                                    <th class="p-3 pl-5">Nome do Item / Descrição</th>
+                                    <th class="p-3 w-32 text-right">Valor Total</th>
                                     <th class="p-3 w-10 text-center"></th>
                                 </tr>
                             </thead>
@@ -343,7 +343,7 @@
                     <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">Descreva como será o
                         pagamento</label>
                     <textarea id="select-pagamento" rows="4"
-                        placeholder="Ex: 50% de entrada e restante na entrega, ou PIX com 5% de desconto..."
+                        placeholder="Ex: 50% de entrada e restante na entrega, com 5% de desconto..."
                         class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all font-medium text-sm resize-none"></textarea>
                 </div>
             </div>
@@ -623,7 +623,8 @@
 
                     const valorTotalItem = subProd + subMO + subFrete;
 
-                    descricaoTexto += `• ${qtd}x ${item.nome} - ${formatarMoeda(subProd)}`;
+                    descricaoTexto += `• ${item.nome}`;
+                    if (item.preco > 0) descricaoTexto += ` - ${formatarMoeda(subProd)}`;
                     if (subMO > 0) descricaoTexto += ` + M.O: ${formatarMoeda(subMO)}`;
                     if (subFrete > 0) descricaoTexto += ` + Frete: ${formatarMoeda(subFrete)}`;
                     if (item.descricao) descricaoTexto += `\n  (${item.descricao})`;
@@ -633,13 +634,9 @@
                     <tr class="group hover:bg-slate-50 border-b border-slate-50 last:border-0">
                         <td class="p-3 pl-5">
                             <div class="font-bold text-slate-700 text-sm">${item.nome}</div>
-                            <div class="text-[10px] text-slate-400 truncate max-w-[120px] leading-tight">${item.descricao || ''}</div>
+                            <div class="text-xs text-slate-500 mt-0.5 leading-relaxed">${item.descricao || ''}</div>
                         </td>
-                        <td class="p-3 text-center">
-                            <input type="number" min="1" value="${qtd}" onchange="atualizarQuantidade(${index}, this.value)" 
-                                class="w-12 p-1 text-center bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold focus:border-blue-500 focus:outline-none focus:bg-white transition-all">
-                        </td>
-                        <td class="p-3 text-right font-bold text-slate-700 text-sm">
+                        <td class="p-3 text-right font-bold text-slate-800 text-sm">
                             ${formatarMoeda(valorTotalItem)}
                         </td>
                         <td class="p-3 text-center">
@@ -1028,6 +1025,7 @@
             if (item) {
                 document.getElementById('inline-nome').value = item.nome;
                 document.getElementById('inline-preco').value = item.preco.toFixed(2).replace('.', ',');
+                document.getElementById('inline-descricao').value = item.descricao || '';
 
                 // Preenche Tipo e Dados Extras
                 const tipo = item.tipo || 'Serviço'; // default
@@ -1040,13 +1038,13 @@
                     document.getElementById('inline-frete').value = (item.frete || 0).toFixed(2).replace('.', ',');
                 }
 
-                document.getElementById('inline-qtd').focus();
+                document.getElementById('inline-descricao').focus();
             }
         }
 
         async function adicionarItemInline() {
             const nome = document.getElementById('inline-nome').value.trim();
-            const qtd = parseInt(document.getElementById('inline-qtd').value) || 1;
+            const descricao = document.getElementById('inline-descricao').value.trim();
             const precoStr = document.getElementById('inline-preco').value.replace('€', '').trim().replace(',', '.');
             const preco = parseFloat(precoStr);
 
@@ -1076,9 +1074,9 @@
                 // Item visual para a tabela
                 const novoItem = {
                     nome,
-                    qtd,
+                    qtd: 1, // Default 1
                     preco,
-                    descricao: '', // Simplificado
+                    descricao,
                     tipo,
                     mao_de_obra: maoObra,
                     frete: frete
@@ -1092,6 +1090,7 @@
                     const { data, error } = await sb.from('itens').insert([{
                         nome,
                         preco,
+                        descricao,
                         tipo,
                         mao_de_obra: maoObra,
                         frete: frete,
@@ -1111,8 +1110,6 @@
                     }
                 } else {
                     novoItem.id = itemExistente.id;
-                    // Se quisesse atualizar o item existente no banco com os novos valores, faria aqui. 
-                    // O createItemInline usa os valores dos inputs para o objeto visual 'novoItem', então no orçamento fica o que digitou.
                 }
 
                 // Adiciona à lista do orçamento
@@ -1120,8 +1117,8 @@
 
                 // Limpa campos
                 document.getElementById('inline-nome').value = '';
+                document.getElementById('inline-descricao').value = '';
                 document.getElementById('inline-preco').value = '';
-                document.getElementById('inline-qtd').value = '1';
                 document.getElementById('inline-mao-obra').value = '';
                 document.getElementById('inline-frete').value = '';
                 document.getElementById('select-item-inline').value = '';

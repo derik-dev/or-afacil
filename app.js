@@ -727,7 +727,7 @@ async function carregarDetalhes() {
                 <td class="p-1" colspan="2">
                     <div class="bg-slate-50 rounded-xl p-2.5 border border-gray-100 flex justify-between items-start gap-2">
                         <div class="flex flex-col flex-1">
-                            <span class="text-[11px] font-bold text-black">${qtd}x ${item.nome}</span>
+                            <span class="text-[11px] font-bold text-black">${item.nome}</span>
                             ${item.descricao ? `<span class="text-[9px] text-gray-600 mt-0.5 leading-tight">${item.descricao.replace(/\n/g, '<br>')}</span>` : ''}
                             ${(subMO > 0 || subFrete > 0) ? `<span class="text-[9px] text-gray-400 mt-1 pt-1 border-t border-gray-200 inline-block w-full">${subMO > 0 ? `M.O: ${formatarMoeda(subMO)}` : ''} ${subMO > 0 && subFrete > 0 ? '•' : ''} ${subFrete > 0 ? `Frete: ${formatarMoeda(subFrete)}` : ''}</span>` : ''}
                         </div>
