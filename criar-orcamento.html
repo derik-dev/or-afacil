@@ -73,69 +73,69 @@
                     </div>
 
                     <div class="p-5 md:p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="md:col-span-2 order-1">
-                            <label
-                                class="block text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Selecione
-                                o Cliente *</label>
+                        <!-- Linha 1: Select Full Width -->
+                        <div class="md:col-span-3">
+                            <label class="block text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                                <i class="ph-bold ph-lightning text-amber-500"></i> Preencher Rápido (Cliente Existente)
+                            </label>
                             <div class="relative group">
                                 <span
-                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-blue-500 transition-colors z-10">
+                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-amber-500 transition-colors z-10">
                                     <i class="ph-bold ph-magnifying-glass text-lg"></i>
                                 </span>
-                                <select id="select-cliente"
-                                    class="w-full pl-12 pr-10 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 appearance-none transition-all cursor-pointer text-sm font-medium text-slate-700 hover:border-blue-300">
-                                    <option value="">Selecione um cliente...</option>
+                                <select id="select-cliente" onchange="preencherDadosCliente()"
+                                    class="w-full pl-12 pr-10 py-3 bg-amber-50/50 border border-amber-200/60 rounded-xl focus:outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 appearance-none transition-all cursor-pointer text-sm font-medium text-slate-700 hover:border-amber-300">
+                                    <option value="">Selecione para preencher...</option>
                                 </select>
                                 <i
                                     class="ph-bold ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
                             </div>
                         </div>
-                        <div class="order-3 md:order-2">
-                            <label class="block text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Data
-                                de Validade</label>
-                            <div class="relative group">
-                                <span
-                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-blue-500 transition-colors z-10">
-                                    <i class="ph-bold ph-calendar-blank text-lg"></i>
-                                </span>
-                                <input type="date" id="input-validade"
-                                    class="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm font-medium text-slate-600 cursor-pointer hover:border-blue-300">
-                            </div>
-                        </div>
 
-                        <!-- Formulário Inline Novo Cliente (Estilizado) -->
+                        <!-- Linha 2: Campos do Cliente + Data Validade -->
                         <div id="form-novo-cliente"
-                            class="hidden border-t border-slate-100 bg-blue-50/30 p-5 md:p-6 animate-fade-in-down order-2 md:order-3 md:col-span-3">
-                            <div class="flex justify-between items-center mb-5">
-                                <p class="text-xs font-bold text-blue-800 uppercase flex items-center gap-2">
-                                    <span class="bg-blue-100 text-blue-600 p-1 rounded"><i
-                                            class="ph-fill ph-user-plus"></i></span> Registo Rápido
-                                </p>
-                                <button type="button" onclick="toggleNovoCliente()"
-                                    class="text-slate-400 hover:text-red-500 transition-colors p-1 hover:bg-red-50 rounded-lg">
-                                    <i class="ph-bold ph-x text-lg"></i>
+                            class="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-slate-100">
+                            <div class="md:col-span-2 flex justify-between items-center mb-2">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Dados do
+                                    Cliente & Orçamento</span>
+                                <button type="button" onclick="limparCamposCliente()"
+                                    class="text-[10px] font-bold text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1">
+                                    <i class="ph-bold ph-eraser"></i> Limpar
                                 </button>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <!-- Nome e Data Validade lado a lado em desktop -->
+                            <div class="col-span-1 md:col-span-1">
                                 <input type="text" id="novo-cli-nome" placeholder="Nome Completo *"
-                                    class="col-span-1 md:col-span-2 px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
-                                <input type="tel" id="novo-cli-phone" placeholder="Telemóvel"
-                                    class="px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
-                                <input type="email" id="novo-cli-email" placeholder="E-mail"
-                                    class="px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
-                                <input type="text" id="novo-cli-cpf" placeholder="NIF (Opcional)"
-                                    class="px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
-                                <input type="text" id="novo-cli-empresa" placeholder="Empresa / Loja"
-                                    class="px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
-                                <input type="text" id="novo-cli-endereco" placeholder="Morada Completa"
-                                    class="col-span-1 md:col-span-2 px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
+                                    class="w-full px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-bold text-slate-700">
                             </div>
 
-                            <button type="button" onclick="salvarClienteRapido()"
-                                class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-3 px-4 rounded-xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 transform active:scale-[0.98]">
-                                <i class="ph-bold ph-check"></i> Guardar Cliente
-                            </button>
+                            <div class="col-span-1 md:col-span-1">
+                                <div class="relative group">
+                                    <span
+                                        class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-blue-500 transition-colors z-10">
+                                        <i class="ph-bold ph-calendar-blank text-lg"></i>
+                                    </span>
+                                    <input type="date" id="input-validade"
+                                        class="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm font-medium text-slate-600 cursor-pointer hover:border-blue-300">
+                                </div>
+                            </div>
+
+                            <!-- Resto dos campos -->
+                            <input type="tel" id="novo-cli-phone" placeholder="Telemóvel"
+                                class="px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
+
+                            <input type="email" id="novo-cli-email" placeholder="E-mail"
+                                class="px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
+
+                            <input type="text" id="novo-cli-cpf" placeholder="NIF (Opcional)"
+                                class="px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
+
+                            <input type="text" id="novo-cli-empresa" placeholder="Empresa / Loja"
+                                class="px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
+
+                            <input type="text" id="novo-cli-endereco" placeholder="Morada Completa"
+                                class="col-span-1 md:col-span-2 px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
                         </div>
                     </div>
 
@@ -145,21 +145,100 @@
                 <!-- Seção Itens -->
                 <!-- Seção Itens (Redesenhada & Otimizada) -->
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div
-                        class="p-5 md:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100">
-                        <div class="flex items-center gap-3">
-                            <div
-                                class="w-10 h-10 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-600 flex-shrink-0">
-                                <i class="ph-duotone ph-cube text-2xl"></i>
+                    <div class="p-5 md:p-6 border-b border-slate-100 bg-slate-50/50">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-blue-600 flex-shrink-0 shadow-sm">
+                                    <i class="ph-duotone ph-cube text-2xl"></i>
+                                </div>
+                                <h3 class="text-sm font-bold text-slate-800 leading-tight">
+                                    PRODUTOS &<br>SERVIÇOS
+                                </h3>
                             </div>
-                            <h3 class="text-sm font-bold text-slate-800 leading-tight">
-                                PRODUTOS &<br>SERVIÇOS
-                            </h3>
                         </div>
-                        <button type="button" onclick="abrirModalItens()"
-                            class="w-full sm:w-auto bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-5 py-2.5 rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg shadow-slate-500/20 active:scale-95 group">
-                            <i class="ph-bold ph-plus group-hover:rotate-90 transition-transform"></i> Adicionar Item
-                        </button>
+
+                        <!-- Inline Add Form -->
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold text-slate-400 mb-1 uppercase flex items-center gap-1">
+                                    <i class="ph-bold ph-lightning text-amber-500"></i> Catálogo (Preencher Rápido)
+                                </label>
+                                <div class="relative">
+                                    <select id="select-item-inline" onchange="preencherItemInline()"
+                                        class="w-full pl-10 pr-8 py-2.5 bg-amber-50/50 border border-amber-200/60 rounded-lg focus:outline-none focus:border-amber-500 text-sm font-medium text-slate-700 appearance-none cursor-pointer hover:border-amber-300 transition-colors">
+                                        <option value="">Selecione um item do catálogo...</option>
+                                    </select>
+                                    <i
+                                        class="ph-bold ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+                                    <i
+                                        class="ph-bold ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                                <!-- Linha 1: Tipo e Nome -->
+                                <div class="col-span-1 md:col-span-3">
+                                    <label
+                                        class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Tipo</label>
+                                    <div class="relative">
+                                        <select id="inline-tipo" onchange="toggleInlineTipo()"
+                                            class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-sm font-bold text-slate-700 appearance-none cursor-pointer">
+                                            <option value="Serviço">Serviço</option>
+                                            <option value="Produto">Produto</option>
+                                        </select>
+                                        <i
+                                            class="ph-bold ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                                    </div>
+                                </div>
+                                <div class="col-span-1 md:col-span-9">
+                                    <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Nome
+                                        do Item</label>
+                                    <input type="text" id="inline-nome" placeholder="Ex: Instalação Elétrica"
+                                        class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 font-bold text-slate-700 text-sm">
+                                </div>
+
+                                <!-- Linha 2: Valores e Botão -->
+                                <div class="col-span-6 md:col-span-2">
+                                    <label
+                                        class="block text-[10px] font-bold text-slate-400 mb-1 uppercase text-center">Qtd</label>
+                                    <input type="number" id="inline-qtd" value="1" min="1"
+                                        class="w-full px-1 py-2.5 text-center bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 font-bold text-slate-700 text-sm">
+                                </div>
+
+                                <div class="col-span-6 md:col-span-3">
+                                    <label
+                                        class="block text-[10px] font-bold text-slate-400 mb-1 uppercase text-right">Preço
+                                        Unit. (€)</label>
+                                    <input type="text" inputmode="decimal" id="inline-preco" placeholder="0,00"
+                                        class="w-full px-3 py-2.5 text-right bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 font-bold text-slate-700 text-sm">
+                                </div>
+
+                                <!-- Falta: Mão de Obra (Serviço) ou Frete (Produto) -->
+                                <div id="inline-box-mo" class="col-span-6 md:col-span-3">
+                                    <label
+                                        class="block text-[10px] font-bold text-slate-400 mb-1 uppercase text-right">Mão
+                                        de Obra (€)</label>
+                                    <input type="text" inputmode="decimal" id="inline-mao-obra" placeholder="0,00"
+                                        class="w-full px-3 py-2.5 text-right bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 font-medium text-slate-600 text-sm">
+                                </div>
+                                <div id="inline-box-frete" class="col-span-6 md:col-span-3 hidden">
+                                    <label
+                                        class="block text-[10px] font-bold text-slate-400 mb-1 uppercase text-right">Frete
+                                        (€)</label>
+                                    <input type="text" inputmode="decimal" id="inline-frete" placeholder="0,00"
+                                        class="w-full px-3 py-2.5 text-right bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 font-medium text-slate-600 text-sm">
+                                </div>
+
+                                <div class="col-span-12 md:col-span-4">
+                                    <button type="button" onclick="adicionarItemInline()"
+                                        class="w-full bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold py-2.5 rounded-lg shadow-lg shadow-slate-500/20 active:scale-95 transition-all flex items-center justify-center gap-2">
+                                        <i class="ph-bold ph-plus"></i> Adicionar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="overflow-x-auto">
@@ -167,7 +246,7 @@
                             <thead
                                 class="bg-slate-50/50 text-slate-500 font-bold border-b border-slate-100 text-[10px] uppercase tracking-wider">
                                 <tr>
-                                    <th class="p-3 pl-5">Descrição do Item</th>
+                                    <th class="p-3 pl-5">Nome do Item</th>
                                     <th class="p-3 w-20 text-center">Qtd</th>
                                     <th class="p-3 w-28 text-right">Valor</th>
                                     <th class="p-3 w-10 text-center"></th>
@@ -843,23 +922,327 @@
         };
 
         const mascaraTel = (val) => {
-            val = val.replace(/\D/g, "").slice(0, 9); // Tlm 9 dígitos
+            val = val.replace(/\D/g, "").slice(0, 9); // Telemóvel tem 9 dígitos
             // Formato 912 345 678
             return val.replace(/(\d{3})(\d)/, "$1 $2")
                 .replace(/(\d{3}) (\d{3})(\d)/, "$1 $2 $3");
         };
 
-        document.addEventListener('DOMContentLoaded', () => {
+        // ==========================================
+        // LÓGICA DE CADASTRO UNIFICADO (Modificações)
+        // ==========================================
+        let clientesMap = {};
+        let catalogoMap = {};
 
+        // Sobrescreve a função do app.js para carregar com mais dados
+        window.carregarSelectClientes = async function () {
+            const sel = document.getElementById('select-cliente');
+            if (!sel) return;
+
+            sel.innerHTML = '<option value="">A carregar...</option>';
+
+            const { data: clientes } = await sb.from('clientes').select('*').order('nome');
+
+            sel.innerHTML = '<option value="">Selecione para preencher...</option>'; // Reset
+            clientesMap = {}; // Reset map
+
+            if (clientes) {
+                clientes.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.nome;
+                    opt.innerText = c.nome;
+                    sel.appendChild(opt);
+
+                    // Guarda dados no map
+                    clientesMap[c.nome] = c;
+                });
+            }
+        }
+
+        async function carregarCatalogoInline() {
+            const sel = document.getElementById('select-item-inline');
+            if (!sel) return;
+
+            const { data: itens } = await sb.from('itens').select('*').order('nome');
+
+            sel.innerHTML = '<option value="">Selecione um item do catálogo...</option>';
+            catalogoMap = {};
+
+            if (itens) {
+                itens.forEach(i => {
+                    const opt = document.createElement('option');
+                    opt.value = i.id; // Aqui usamos ID para identificar no map
+                    opt.innerText = `${i.nome} - ${parseFloat(i.preco).toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' })}`;
+                    sel.appendChild(opt);
+                    catalogoMap[i.id] = i;
+                });
+            }
+        }
+
+        function preencherDadosCliente() {
+            const nomeSelecionado = document.getElementById('select-cliente').value;
+            const cliente = clientesMap[nomeSelecionado];
+
+            if (cliente) {
+                document.getElementById('novo-cli-nome').value = cliente.nome || '';
+                document.getElementById('novo-cli-phone').value = cliente.phone || '';
+                document.getElementById('novo-cli-email').value = cliente.email || '';
+                document.getElementById('novo-cli-cpf').value = cliente.cpf || '';
+                document.getElementById('novo-cli-empresa').value = cliente.empresa || '';
+                document.getElementById('novo-cli-endereco').value = cliente.endereco || '';
+                // Bloqueia campos? Não, deixa editar se quiser atualizar (embora update precise de lógica extra)
+                // Vamos deixar livre, mas se alterar o nome, vira "novo" logicamente
+            } else {
+                limparCamposCliente();
+            }
+        }
+
+        function limparCamposCliente() {
+            document.getElementById('select-cliente').value = "";
+            document.getElementById('novo-cli-nome').value = '';
+            document.getElementById('novo-cli-phone').value = '';
+            document.getElementById('novo-cli-email').value = '';
+            document.getElementById('novo-cli-cpf').value = '';
+            document.getElementById('novo-cli-empresa').value = '';
+            document.getElementById('novo-cli-endereco').value = '';
+        }
+
+        function toggleInlineTipo() {
+            const tipo = document.getElementById('inline-tipo').value;
+            const boxMO = document.getElementById('inline-box-mo');
+            const boxFrete = document.getElementById('inline-box-frete');
+
+            if (tipo === 'Serviço') {
+                boxMO.classList.remove('hidden');
+                boxFrete.classList.add('hidden');
+            } else {
+                boxMO.classList.add('hidden');
+                boxFrete.classList.remove('hidden');
+            }
+        }
+
+        function preencherItemInline() {
+            const id = document.getElementById('select-item-inline').value;
+            const item = catalogoMap[id];
+
+            if (item) {
+                document.getElementById('inline-nome').value = item.nome;
+                document.getElementById('inline-preco').value = item.preco.toFixed(2).replace('.', ',');
+
+                // Preenche Tipo e Dados Extras
+                const tipo = item.tipo || 'Serviço'; // default
+                document.getElementById('inline-tipo').value = tipo;
+                toggleInlineTipo(); // Atualiza viz
+
+                if (tipo === 'Serviço') {
+                    document.getElementById('inline-mao-obra').value = (item.mao_de_obra || 0).toFixed(2).replace('.', ',');
+                } else {
+                    document.getElementById('inline-frete').value = (item.frete || 0).toFixed(2).replace('.', ',');
+                }
+
+                document.getElementById('inline-qtd').focus();
+            }
+        }
+
+        async function adicionarItemInline() {
+            const nome = document.getElementById('inline-nome').value.trim();
+            const qtd = parseInt(document.getElementById('inline-qtd').value) || 1;
+            const precoStr = document.getElementById('inline-preco').value.replace('€', '').trim().replace(',', '.');
+            const preco = parseFloat(precoStr);
+
+            const tipo = document.getElementById('inline-tipo').value;
+            const moStr = document.getElementById('inline-mao-obra').value.replace('€', '').trim().replace(',', '.') || '0';
+            const freteStr = document.getElementById('inline-frete').value.replace('€', '').trim().replace(',', '.') || '0';
+
+            let maoObra = parseFloat(moStr);
+            let frete = parseFloat(freteStr);
+
+            // Limpa dados irrelevantes pelo tipo
+            if (tipo === 'Produto') maoObra = 0;
+            if (tipo === 'Serviço') frete = 0;
+
+            if (!nome || isNaN(preco)) return alert("Preencha a descrição e o preço.");
+
+            const btn = document.querySelector('button[onclick="adicionarItemInline()"]');
+            if (!btn) {
+                console.error("Botão 'Adicionar' não encontrado!");
+                return alert("Erro: Botão não encontrado. Recarregue a página.");
+            }
+
+            const originalBtnContent = btn.innerHTML;
+            setBtnLoading(btn, true, 'Add...');
+
+            try {
+                // Item visual para a tabela
+                const novoItem = {
+                    nome,
+                    qtd,
+                    preco,
+                    descricao: '', // Simplificado
+                    tipo,
+                    mao_de_obra: maoObra,
+                    frete: frete
+                };
+
+                let itemExistente = Object.values(catalogoMap).find(i => i.nome.toLowerCase() === nome.toLowerCase());
+
+                if (!itemExistente) {
+                    // CRIA NO BANCO SE NÃO EXISTE
+                    const { data: { user } } = await sb.auth.getUser();
+                    const { data, error } = await sb.from('itens').insert([{
+                        nome,
+                        preco,
+                        tipo,
+                        mao_de_obra: maoObra,
+                        frete: frete,
+                        user_id: user.id
+                    }]).select();
+
+                    if (!error && data) {
+                        novoItem.id = data[0].id;
+                        // Atualiza map local
+                        catalogoMap[data[0].id] = data[0];
+
+                        // Atualiza o select de catálogo
+                        const opt = document.createElement('option');
+                        opt.value = data[0].id;
+                        opt.innerText = `${data[0].nome} - ${formatarMoeda(data[0].preco)}`;
+                        document.getElementById('select-item-inline').appendChild(opt);
+                    }
+                } else {
+                    novoItem.id = itemExistente.id;
+                    // Se quisesse atualizar o item existente no banco com os novos valores, faria aqui. 
+                    // O createItemInline usa os valores dos inputs para o objeto visual 'novoItem', então no orçamento fica o que digitou.
+                }
+
+                // Adiciona à lista do orçamento
+                selecionarItem(novoItem);
+
+                // Limpa campos
+                document.getElementById('inline-nome').value = '';
+                document.getElementById('inline-preco').value = '';
+                document.getElementById('inline-qtd').value = '1';
+                document.getElementById('inline-mao-obra').value = '';
+                document.getElementById('inline-frete').value = '';
+                document.getElementById('select-item-inline').value = '';
+
+                // Reset tipo default
+                document.getElementById('inline-tipo').value = 'Serviço';
+                toggleInlineTipo();
+
+            } catch (e) {
+                console.error("Erro ao adicionar item:", e);
+                // Item é adicionado mesmo com erro, então não mostramos alert
+            } finally {
+                btn.innerHTML = originalBtnContent;
+                btn.disabled = false;
+            }
+        }
+
+        // Sobrescreve a função de salvar orçamento para garantir criação do cliente
+        window.salvarOrcamentoCompleto = async function () {
+            const btn = document.querySelector('button[onclick="salvarOrcamentoCompleto()"]');
+
+            // 1. Pega dados do form de cliente (prioridade sobre o select)
+            const nome = document.getElementById('novo-cli-nome').value.trim();
+            const phone = document.getElementById('novo-cli-phone').value.trim();
+            const email = document.getElementById('novo-cli-email').value.trim();
+            const empresa = document.getElementById('novo-cli-empresa').value.trim();
+            const cpf = document.getElementById('novo-cli-cpf').value.trim();
+            const endereco = document.getElementById('novo-cli-endereco').value.trim();
+
+            if (!nome) return alert("Por favor, preencha o nome do cliente.");
+
+            setBtnLoading(btn, true, "A verificar cliente...");
+
+            try {
+                // 2. Verifica se cliente já existe (pelo nome no map ou check no banco)
+                // Se o nome no input for igual ao do select, é o mesmo cliente.
+                const selectVal = document.getElementById('select-cliente').value;
+                let clienteFinalNome = nome;
+
+                // Se o nome digitado não está no nosso map de clientes -> Criar
+                if (!clientesMap[nome]) {
+                    const { data: { user } } = await sb.auth.getUser();
+                    console.log("Criando novo cliente automatico:", nome);
+
+                    const { error } = await sb.from('clientes').insert([{
+                        nome, phone, email, empresa, cpf, endereco, user_id: user.id
+                    }]);
+
+                    if (error) throw error;
+
+                    // Atualiza map e select (hack visual)
+                    const sel = document.getElementById('select-cliente');
+                    const opt = document.createElement('option');
+                    opt.value = nome;
+                    opt.innerText = nome;
+                    sel.appendChild(opt);
+                    sel.value = nome; // Seleciona ele para a logica original funcionar se precisar
+                } else {
+                    // Cliente existe, vamos usar o nome dele.
+                    // (Opcional) Poderíamos fazer update dos dados aqui se mudou algo.
+                    // Por segurança, vamos só usar.
+                    document.getElementById('select-cliente').value = nome;
+                }
+
+                // 3. Continua salvando o orçamento com a lógica padrão
+                // Copia a lógica original do app.js ou chama se pudéssemos (mas ela espera o select preenchido)
+                // Como já preenchemos o select acima (sel.value = nome), podemos re-implementar a parte de insert do orçamento aqui
+                // ou chamar uma versão ajustada. Vou re-implementar para ter controle.
+
+                const valorEl = document.getElementById('input-valor');
+                let valorTexto = valorEl.value.replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
+                const valor = parseFloat(valorTexto);
+                if (isNaN(valor) || valor <= 0) throw new Error("Valor inválido.");
+
+                const servico = document.getElementById('input-descricao').value; // Pega texto gerado
+                const prazo = document.getElementById('input-prazo').value;
+                const pagamento = document.getElementById('select-pagamento').value;
+                const moeda = 'EUR';
+                const itensJsonEl = document.getElementById('input-itens-json');
+                const itensJson = itensJsonEl && itensJsonEl.value ? JSON.parse(itensJsonEl.value) : [];
+
+                setBtnLoading(btn, true, "A Gerar Documento...");
+
+                const { data: { user } } = await sb.auth.getUser();
+                const { data: novoOrc, error: errOrc } = await sb.from('orcamentos').insert([{
+                    cliente: nome, // Usa o nome garantido
+                    valor: parseFloat(valor),
+                    mao_de_obra: parseFloat(document.getElementById('input-mao-obra-total').value) || 0,
+                    servico,
+                    prazo,
+                    pagamento,
+                    moeda,
+                    status: 'Pendente',
+                    user_id: user.id,
+                    itens_json: itensJson
+                }]).select();
+
+                if (errOrc) throw errOrc;
+                window.location.href = `detalhes.html?id=${novoOrc[0].id}`;
+
+            } catch (err) {
+                alert("Erro: " + err.message);
+                setBtnLoading(btn, false, 'Guardar e Gerar');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inicia carregamentos
             carregarDadosEmpresaCriacao();
+
+            // Listeners máscaras
             const novoCliCpf = document.getElementById('novo-cli-cpf');
             const novoCliPhone = document.getElementById('novo-cli-phone');
-
             if (novoCliCpf) novoCliCpf.addEventListener('input', (e) => e.target.value = mascaraDoc(e.target.value));
             if (novoCliPhone) novoCliPhone.addEventListener('input', (e) => e.target.value = mascaraTel(e.target.value));
-            if (novoCliPhone) novoCliPhone.addEventListener('input', (e) => e.target.value = mascaraTel(e.target.value));
 
-            atualizarSimboloMoeda(); // Inicializa símbolo
+            atualizarSimboloMoeda();
+
+            // Novos
+            if (window.carregarSelectClientes) window.carregarSelectClientes();
+            carregarCatalogoInline();
         });
 
         function atualizarSimboloMoeda() {
