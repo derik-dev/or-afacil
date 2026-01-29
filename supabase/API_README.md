@@ -68,7 +68,7 @@ Gere API Keys em: **Configurações > API Keys** no OrçaFácil.
   "prazo": "15",
   "pagamento": "pix",
   "chave_pix": "email@exemplo.com",
-  "moeda": "BRL",
+  "moeda": "EUR",
   "status": "Pendente"
 }
 ```

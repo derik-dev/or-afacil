@@ -85,7 +85,7 @@ PostgreSQL Database
 - ✅ Criação de orçamentos profissionais
 - ✅ Seleção de cliente e itens do catálogo
 - ✅ Cálculo automático de valores
-- ✅ Suporte a múltiplas moedas (BRL, USD, EUR)
+- ✅ Suporte a múltiplas moedas (USD, EUR)
 - ✅ Status (Pendente/Aprovado)
 - ✅ Armazenamento de itens em JSON
 - ✅ Geração de PDF

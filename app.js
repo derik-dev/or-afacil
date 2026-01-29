@@ -1,3 +1,6 @@
+// Força atualização de cache - versão 2025-01-29-EURO-FIX
+console.log('🔧 APP.JS CARREGADO - VERSÃO EURO-FIX 2025-01-29');
+
 const PROJECT_URL = 'https://hjeqxocuuquosfapibxo.supabase.co';
 const PROJECT_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqZXF4b2N1dXF1b3NmYXBpYnhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4OTAyMjUsImV4cCI6MjA4MjQ2NjIyNX0.K4nIiH_N22CCVwBWfBkwfJtn65m96QS8iQSAO35iOFU';
 
@@ -21,16 +24,15 @@ function setBtnLoading(btn, isLoading, text = "Aguarde...") {
     }
 }
 
-const COTACOES_PADRAO = { 'BRL': 1.0, 'USD': 1.0, 'EUR': 1.0 }; // Forçado 1.0 para evitar conversões indesejadas pós-migração
+const COTACOES_PADRAO = { 'USD': 1.0, 'EUR': 1.0 }; // Forçado 1.0 para evitar conversões indesejadas pós-migração
 const MOEDA_PADRAO_FORCADA = 'EUR';
 
 function converterParaEuro(valor, moedaOrigem) {
     if (!valor) return 0;
-    const m = moedaOrigem || 'BRL';
+    const m = moedaOrigem || 'EUR';
     if (m === 'EUR') return parseFloat(valor);
 
-    const valorEmBRL = parseFloat(valor) * (COTACOES_PADRAO[m] || 1);
-    const valorEmEUR = valorEmBRL / COTACOES_PADRAO['EUR'];
+    const valorEmEUR = parseFloat(valor) * (COTACOES_PADRAO[m] || 1);
     return valorEmEUR;
 }
 
@@ -158,7 +160,7 @@ async function carregarOrcamentosRecentes() {
         }
 
         // Cotações (mesmas do KPI)
-        const cotacoes = { 'BRL': 1, 'USD': 6.0, 'EUR': 6.5 };
+        const cotacoes = { 'USD': 6.0, 'EUR': 6.5 };
 
         lista.forEach(orc => {
             let statusColor = orc.status === 'Aprovado' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
@@ -462,8 +464,8 @@ window.salvarOrcamentoCompleto = async function () {
     const valorEl = document.getElementById('orc-valor') || document.getElementById('input-valor');
     let valorTexto = valorEl.value || valorEl.innerText;
 
-    // Limpa valor: Remove R$, espaços, pontos de milhar (todos) e troca vírgula decimal por ponto
-    valorTexto = valorTexto.replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
+    // Limpa valor: Remove €, espaços, pontos de milhar (todos) e troca vírgula decimal por ponto
+    valorTexto = valorTexto.replace('€', '').trim().replace(/\./g, '').replace(',', '.');
     const valor = parseFloat(valorTexto);
 
     if (isNaN(valor) || valor <= 0) return alert("Valor inválido. Use o formato: 250,00");
@@ -559,7 +561,14 @@ async function carregarPaginaOrcamentos() {
 }
 
 function formatarMoeda(v) {
-    return parseFloat(v).toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' });
+    // Força Euro de forma absoluta para evitar qualquer conversão indevida
+    const valor = parseFloat(v);
+    if (isNaN(valor)) return '€ 0,00';
+    
+    // Formatação manual para garantir controle total
+    const partes = valor.toFixed(2).split('.');
+    partes[0] = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Separador de milhar
+    return '€ ' + partes.join(','); // Separador decimal
 }
 function formatarData(d) { return d ? new Date(d).toLocaleDateString('pt-PT') : '--/--'; }
 function toggleModal(id, a) { const m = document.getElementById(id); if (m) { a === 'open' ? m.classList.remove('hidden') : m.classList.add('hidden'); } }
@@ -984,13 +993,19 @@ async function salvarConfiguracoesSupabase() {
 
 // Aplica cores da empresa no PDF usando estilos inline (compatível com html2pdf)
 function aplicarCoresPDF(corPrimaria, corTexto = null) {
-    if (!corPrimaria || corPrimaria === '#000000') return; // Ignora se for preto ou vazio
+    console.log('🎨 Aplicando cores PDF:', corPrimaria, corTexto);
+    
+    if (!corPrimaria || corPrimaria === '#000000') {
+        console.log('⚠️ Cor primária ignorada:', corPrimaria);
+        return; // Ignora se for preto ou vazio
+    }
 
     // Apenas o cabeçalho da tabela recebe a cor
     // Também a linha (borda) abaixo do header
     const headerBar = document.getElementById('pdf-header-bar');
     if (headerBar) {
         headerBar.style.borderColor = corPrimaria;
+        console.log('✅ Cor aplicada no header bar');
     }
 
     // Table header row (cabeçalho da tabela)
@@ -1005,12 +1020,16 @@ function aplicarCoresPDF(corPrimaria, corTexto = null) {
             // Usa cor customizada se existir, senão calcula contraste
             th.style.color = corTexto || (isLightColor(corPrimaria) ? '#000000' : '#ffffff');
         });
+        console.log('✅ Cor aplicada no table header:', ths.length, 'elementos');
+    } else {
+        console.log('❌ Table header não encontrado');
     }
 
     // Linha acima dos Termos
     const termsBorder = document.getElementById('pdf-terms-border');
     if (termsBorder) {
         termsBorder.style.borderColor = corPrimaria;
+        console.log('✅ Cor aplicada no terms border');
     }
 }
 

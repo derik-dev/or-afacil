@@ -510,7 +510,7 @@
         </a>
     </nav>
 
-    <script src="app.js?v=1000"></script>
+    <script src="app.js?v=2025-01-29-EURO-FIX"></script>
     <script>
         let itensOrcamento = [];
         let itensCatalogo = [];
@@ -544,7 +544,7 @@
                 li.className = 'p-3 hover:bg-slate-50 border border-slate-100 rounded-lg cursor-pointer flex justify-between items-center group transition-all';
                 li.onclick = () => selecionarItem(item);
 
-                const precoFormatado = parseFloat(item.preco).toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' });
+                const precoFormatado = formatarMoeda(item.preco);
 
                 li.innerHTML = `
                     <div class="flex flex-col">
@@ -969,7 +969,7 @@
                 itens.forEach(i => {
                     const opt = document.createElement('option');
                     opt.value = i.id; // Aqui usamos ID para identificar no map
-                    opt.innerText = `${i.nome} - ${parseFloat(i.preco).toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' })}`;
+                    opt.innerText = `${i.nome} - ${formatarMoeda(i.preco)}`;
                     sel.appendChild(opt);
                     catalogoMap[i.id] = i;
                 });
@@ -1189,7 +1189,7 @@
                 // ou chamar uma versão ajustada. Vou re-implementar para ter controle.
 
                 const valorEl = document.getElementById('input-valor');
-                let valorTexto = valorEl.value.replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
+                let valorTexto = valorEl.value.replace('€', '').trim().replace(/\./g, '').replace(',', '.');
                 const valor = parseFloat(valorTexto);
                 if (isNaN(valor) || valor <= 0) throw new Error("Valor inválido.");
 
@@ -1246,7 +1246,7 @@
             const select = document.getElementById('select-moeda');
             const symbolSpan = document.getElementById('currency-symbol');
             if (select && symbolSpan) {
-                const map = { 'EUR': '€', 'BRL': 'R$', 'USD': '$' };
+                const map = { 'EUR': '€', 'USD': '$' };
                 symbolSpan.innerText = map[select.value] || '€';
             }
         }
