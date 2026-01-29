@@ -912,8 +912,8 @@ async function carregarConfiguracoesSupabase() {
 async function salvarConfiguracoesSupabase() {
     const btn = document.querySelector('button[onclick="salvarConfiguracoesSupabase()"]');
     const nome = document.getElementById('conf-nome').value;
-    const doc = document.getElementById('conf-doc').value;
-    const tel = document.getElementById('conf-tel').value;
+    const doc = document.getElementById('conf-doc').value.replace(/\s/g, ''); // Remove espaços
+    const tel = document.getElementById('conf-tel').value.replace(/\s/g, ''); // Remove espaços
     const endereco = document.getElementById('conf-end').value;
     const pix = document.getElementById('conf-pix') ? document.getElementById('conf-pix').value : '';
     const logo = document.getElementById('conf-logo').value;
@@ -923,7 +923,7 @@ async function salvarConfiguracoesSupabase() {
     const cor_texto = document.getElementById('conf-cor-texto') ? document.getElementById('conf-cor-texto').value : '#ffffff';
 
     // Força moeda EUR
-    const moeda_padrao = 'EUR';
+    const moeda = 'EUR'; // Nome correto da coluna no banco
 
     if (!nome) return alert("Por favor, informe pelo menos o Nome da Empresa.");
 
@@ -935,7 +935,26 @@ async function salvarConfiguracoesSupabase() {
         const { data: existente } = await sb.from('empresas').select('id').eq('user_id', user.id).maybeSingle();
 
         let res;
-        const payload = { nome, doc, tel, endereco, pix, logo, pix_qr, cor_primaria, cor_secundaria, cor_texto, moeda_padrao };
+        const payload = {
+            nome,
+            doc,
+            tel,
+            endereco,
+            pix,
+            logo,
+            pix_qr,
+            cor_primaria,
+            cor_texto,
+            moeda
+        };
+
+        // Remove cor_secundaria do payload pois não existe mais no HTML
+        // Adiciona apenas se o campo existir
+        if (cor_secundaria) {
+            payload.cor_secundaria = cor_secundaria;
+        }
+
+        console.log("Payload a ser salvo:", payload);
 
         if (existente) {
             res = await sb.from('empresas').update(payload).eq('id', existente.id);
@@ -946,7 +965,7 @@ async function salvarConfiguracoesSupabase() {
         if (res.error) throw res.error;
 
         // Atualiza localStorage para formatação global de moeda
-        localStorage.setItem('orcafacil_moeda', moeda_padrao);
+        localStorage.setItem('orcafacil_moeda', moeda);
 
         alert("Configurações da Empresa salvas com sucesso! 🏢");
 
